@@ -1,0 +1,421 @@
+<!-- ============================================================
+     HERO SECTION
+     ============================================================ -->
+<section class="hero-section relative overflow-hidden">
+
+  <!-- Animated background particles -->
+  <div class="particles-container pointer-events-none">
+    @for (p of particles; track p.id) {
+      <span class="floating-spice" [style]="p.style">{{ p.emoji }}</span>
+    }
+  </div>
+
+  <!-- Mandala decorations -->
+  <div class="mandala mandala-1">
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+      <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(201,162,39,0.15)" stroke-width="1"/>
+      <circle cx="100" cy="100" r="60" fill="none" stroke="rgba(201,162,39,0.15)" stroke-width="1"/>
+      <circle cx="100" cy="100" r="40" fill="none" stroke="rgba(201,162,39,0.15)" stroke-width="1"/>
+      <circle cx="100" cy="100" r="20" fill="none" stroke="rgba(255,107,26,0.2)" stroke-width="1"/>
+      @for (angle of [0, 45, 90, 135, 180, 225, 270, 315]; track angle) {
+        <line [attr.x1]="100 + 20*Math.cos(angle*Math.PI/180)"
+              [attr.y1]="100 + 20*Math.sin(angle*Math.PI/180)"
+              [attr.x2]="100 + 80*Math.cos(angle*Math.PI/180)"
+              [attr.y2]="100 + 80*Math.sin(angle*Math.PI/180)"
+              stroke="rgba(201,162,39,0.1)" stroke-width="1"/>
+      }
+    </svg>
+  </div>
+
+  <div class="mandala mandala-2"></div>
+
+  <!-- Hero Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+    <div class="hero-grid">
+
+      <!-- Left: Text Content -->
+      <div class="hero-content">
+        <!-- Eyebrow label -->
+        <div class="hero-eyebrow">
+          <span class="eyebrow-dot"></span>
+          <span>Since 2019 · Authentic Indian Street Food</span>
+          <span class="eyebrow-dot"></span>
+        </div>
+
+        <!-- Main headline -->
+        <h1 class="hero-headline">
+          <span class="headline-accent">Taste the</span>
+          <br>
+          <span class="headline-main">Legend</span>
+        </h1>
+
+        <!-- Subtitle in Hindi-inspired styling -->
+        <div class="hero-tagline">
+          <span class="tagline-hindi">स्वाद का जादू</span>
+          <span class="tagline-english">The Magic of Taste</span>
+        </div>
+
+        <p class="hero-description">
+          From the tandoors of Punjab to the coconut kitchens of Kerala —
+          Gabbar Singh Truck brings India's most explosive flavors to your doorstep.
+          <strong>No mercy on flavor. Only legends survive.</strong>
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="hero-actions">
+          <a routerLink="/menu" class="btn-primary hero-btn-primary">
+            <span>🌶️</span>
+            <span>Order Now</span>
+          </a>
+          <a routerLink="/menu" class="hero-btn-secondary">
+            <span>View Full Menu</span>
+            <span class="btn-arrow">→</span>
+          </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-value">50+</span>
+            <span class="stat-label">Dishes</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-value">10K+</span>
+            <span class="stat-label">Happy Customers</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-value">⭐ 4.9</span>
+            <span class="stat-label">Rating</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Visual -->
+      <div class="hero-visual">
+        <div class="hero-image-container">
+          <!-- Main food imagery using emoji art (replace with real image) -->
+          <div class="food-showcase">
+            <div class="food-circle-outer">
+              <div class="food-circle-inner">
+                <span class="food-main-emoji">🍛</span>
+              </div>
+            </div>
+            <!-- Orbiting food items -->
+            <div class="orbit orbit-1">
+              <div class="orbit-item">🫓</div>
+            </div>
+            <div class="orbit orbit-2">
+              <div class="orbit-item">🥘</div>
+            </div>
+            <div class="orbit orbit-3">
+              <div class="orbit-item">🌶️</div>
+            </div>
+          </div>
+
+          <!-- Floating badges -->
+          <div class="badge-float badge-float-1">
+            <span>🏆</span>
+            <span>Best Street Food 2024</span>
+          </div>
+          <div class="badge-float badge-float-2">
+            <span>🔥</span>
+            <span>Tupaki Chicken!</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator">
+    <div class="scroll-dot"></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     MARQUEE STRIP
+     ============================================================ -->
+<div class="marquee-strip">
+  <div class="marquee-track">
+    <span>🌶️ Tupaki Chicken</span>
+    <span>🍛 Butter Chicken</span>
+    <span>🥞 Masala Dosa</span>
+    <span>☕ Filter Coffee</span>
+    <span>🍚 Hyderabadi Biryani</span>
+    <span>🫓 Garlic Naan</span>
+    <span>🥛 Mango Lassi</span>
+    <span>🌿 Chettinad Chicken</span>
+    <span>⭐ Gabbar's Special</span>
+    <!-- Duplicate for seamless loop -->
+    <span>🌶️ Tupaki Chicken</span>
+    <span>🍛 Butter Chicken</span>
+    <span>🥞 Masala Dosa</span>
+    <span>☕ Filter Coffee</span>
+    <span>🍚 Hyderabadi Biryani</span>
+    <span>🫓 Garlic Naan</span>
+  </div>
+</div>
+
+<!-- ============================================================
+     TUPAKI CHICKEN - SIGNATURE FEATURE
+     ============================================================ -->
+@if (tupakiItem) {
+  <section class="tupaki-section">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="tupaki-card reveal">
+        <!-- Background decorations -->
+        <div class="tupaki-bg-fire">
+          <span>🔥</span><span>🔥</span><span>🔥</span>
+        </div>
+
+        <div class="tupaki-grid">
+          <!-- Image side -->
+          <div class="tupaki-image">
+            <div class="tupaki-image-ring">
+              <span class="tupaki-emoji">🍗</span>
+            </div>
+            <div class="tupaki-badge">LEGEND</div>
+            <div class="spice-level-display">
+              🌶️🌶️🌶️🌶️🌶️
+              <span>Max Heat!</span>
+            </div>
+          </div>
+
+          <!-- Content side -->
+          <div class="tupaki-content">
+            <div class="tupaki-eyebrow">⭐ Chef's Signature</div>
+            <h2 class="tupaki-name">Tupaki Chicken</h2>
+            <p class="tupaki-tagline">
+              <em>"The dish that separates the brave from the rest"</em>
+            </p>
+            <p class="tupaki-description">{{ tupakiItem.description }}</p>
+
+            <div class="tupaki-details">
+              <div class="tupaki-detail">
+                <span class="detail-icon">🌶️</span>
+                <span>Andhra Pradesh Style</span>
+              </div>
+              <div class="tupaki-detail">
+                <span class="detail-icon">⏱️</span>
+                <span>12 Secret Spices</span>
+              </div>
+              <div class="tupaki-detail">
+                <span class="detail-icon">🔥</span>
+                <span>Slow Cooked</span>
+              </div>
+            </div>
+
+            <div class="tupaki-footer">
+              <div class="tupaki-price">${{ tupakiItem.price }}</div>
+              <a routerLink="/menu" class="btn-primary">
+                <span>🌶️</span> Order Tupaki
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+}
+
+<!-- ============================================================
+     FEATURED MENU PREVIEW
+     ============================================================ -->
+<section class="featured-section" id="menu-preview">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+
+    <div class="section-header reveal">
+      <h2 class="section-heading text-gradient-maroon">Our Most Loved Dishes</h2>
+      <div class="section-divider">
+        <span class="divider-icon">🪷</span>
+      </div>
+      <p class="section-subtitle">
+        Crafted with generations of culinary wisdom and a whole lot of love
+      </p>
+    </div>
+
+    <!-- North Indian Featured -->
+    <div class="menu-region reveal">
+      <div class="region-header">
+        <div class="region-badge north">
+          <span>🏔️</span>
+          <span>North Indian</span>
+        </div>
+        <a routerLink="/menu" [queryParams]="{type: 'north'}" class="region-link">
+          View All North Indian →
+        </a>
+      </div>
+
+      @if (menuService.loading()) {
+        <div class="items-grid">
+          @for (s of [1,2,3]; track s) {
+            <div class="skeleton h-72 rounded-2xl"></div>
+          }
+        </div>
+      } @else {
+        <div class="items-grid">
+          @for (item of northFeatured; track item.id) {
+            <app-menu-item-card [item]="item" />
+          }
+        </div>
+      }
+    </div>
+
+    <!-- South Indian Featured -->
+    <div class="menu-region reveal">
+      <div class="region-header">
+        <div class="region-badge south">
+          <span>🌴</span>
+          <span>South Indian</span>
+        </div>
+        <a routerLink="/menu" [queryParams]="{type: 'south'}" class="region-link">
+          View All South Indian →
+        </a>
+      </div>
+
+      @if (menuService.loading()) {
+        <div class="items-grid">
+          @for (s of [1,2,3]; track s) {
+            <div class="skeleton h-72 rounded-2xl"></div>
+          }
+        </div>
+      } @else {
+        <div class="items-grid">
+          @for (item of southFeatured; track item.id) {
+            <app-menu-item-card [item]="item" />
+          }
+        </div>
+      }
+    </div>
+
+    <div class="text-center mt-12 reveal">
+      <a routerLink="/menu" class="btn-gold text-lg px-8 py-4">
+        <span>🍽️</span>
+        <span>Explore Complete Menu</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ABOUT / STORY SECTION
+     ============================================================ -->
+<section class="about-section" id="about">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="about-grid">
+      <div class="about-visual reveal">
+        <div class="about-image-wrapper">
+          <div class="about-main-image">
+            <span class="about-icon">🚚</span>
+          </div>
+          <div class="about-badge-1">
+            <span>🌶️</span>
+            <div>
+              <strong>Born in Punjab</strong>
+              <p>Est. 2019</p>
+            </div>
+          </div>
+          <div class="about-badge-2">
+            <span>❤️</span>
+            <div>
+              <strong>Made with Love</strong>
+              <p>Always Fresh</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-content reveal">
+        <div class="eyebrow-label">Our Story</div>
+        <h2 class="section-heading">
+          From Punjab's<br>
+          <span class="text-gradient-saffron">Streets to Yours</span>
+        </h2>
+        <div class="section-divider">
+          <span class="divider-icon">🌾</span>
+        </div>
+        <div class="about-text">
+          <p>
+            Gabbar Singh Truck was born from a simple idea: what if you could taste
+            the real India — not the watered-down version, but the actual street food
+            that makes your eyes water and your soul sing?
+          </p>
+          <p>
+            Our founder, Chef Gurpreet Singh, grew up eating his grandmother's Punjabi
+            cooking and learning South Indian recipes from his college days in Chennai.
+            He combined these two great traditions into one legendary food truck.
+          </p>
+          <p>
+            The name "Gabbar" isn't just a Bollywood reference — it's a promise.
+            Gabbar doesn't apologize. Neither do our flavors.
+          </p>
+        </div>
+
+        <div class="about-features">
+          <div class="about-feature">
+            <span>✅</span>
+            <span>100% Authentic Recipes</span>
+          </div>
+          <div class="about-feature">
+            <span>✅</span>
+            <span>Fresh Ingredients Daily</span>
+          </div>
+          <div class="about-feature">
+            <span>✅</span>
+            <span>No Artificial Colors</span>
+          </div>
+          <div class="about-feature">
+            <span>✅</span>
+            <span>Halal Certified</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     LOCATIONS SECTION
+     ============================================================ -->
+<section class="locations-section" id="locations">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="section-header reveal">
+      <h2 class="section-heading">Find the Truck</h2>
+      <div class="section-divider">
+        <span class="divider-icon">📍</span>
+      </div>
+    </div>
+
+    <div class="locations-grid reveal">
+      <div class="location-card">
+        <div class="location-icon">📍</div>
+        <h3>Monday – Wednesday</h3>
+        <p>Downtown Food Court<br>123 Main St, City Center</p>
+        <p class="location-hours">11:00 AM – 9:00 PM</p>
+      </div>
+      <div class="location-card featured-location">
+        <div class="location-icon">🔥</div>
+        <h3>Thursday – Saturday</h3>
+        <p>Riverside Market<br>456 River Rd, Waterfront</p>
+        <p class="location-hours">11:00 AM – 11:00 PM</p>
+        <span class="hot-badge">Busiest Days!</span>
+      </div>
+      <div class="location-card">
+        <div class="location-icon">☀️</div>
+        <h3>Sunday</h3>
+        <p>Weekend Farmers Market<br>789 Park Ave</p>
+        <p class="location-hours">10:00 AM – 8:00 PM</p>
+      </div>
+    </div>
+
+    <div class="text-center mt-8 reveal">
+      <p class="text-spice-dark opacity-70 mb-4">Can't find us? We do private events & catering!</p>
+      <a href="mailto:namaste@gabbarsinghtruck.com" class="btn-secondary">
+        📧 Book for Events
+      </a>
+    </div>
+  </div>
+</section>

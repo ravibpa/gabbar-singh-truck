@@ -1,0 +1,87 @@
+<div class="menu-card" [class.featured-card]="item.is_featured" [class.special-card]="item.is_special">
+
+  <!-- Card Image / Emoji -->
+  <div class="card-image">
+    @if (item.is_special) {
+      <div class="special-ribbon">⭐ Chef's Special</div>
+    }
+
+    <div class="image-wrapper">
+      @if (item.image_url) {
+        <img [src]="item.image_url" [alt]="item.name" loading="lazy" class="food-image" />
+      } @else {
+        <div class="emoji-placeholder">
+          <span>{{ item.is_vegetarian ? '🥘' : '🍗' }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- Spice level overlay -->
+    <div class="spice-overlay">
+      @for (level of spiceArray; track level) {
+        <span class="chili" [class.active]="level <= item.spice_level">🌶️</span>
+      }
+    </div>
+
+    <!-- Veg/NonVeg indicator -->
+    <div class="veg-indicator" [class.veg]="item.is_vegetarian" [class.nonveg]="!item.is_vegetarian">
+      <span>{{ item.is_vegetarian ? '🟢' : '🔴' }}</span>
+    </div>
+  </div>
+
+  <!-- Card Body -->
+  <div class="card-body">
+    <!-- Badges -->
+    <div class="card-badges">
+      @if (item.is_vegetarian) {
+        <span class="badge-veg">🌱 Veg</span>
+      } @else {
+        <span class="badge-nonveg">🍖 Non-Veg</span>
+      }
+      @if (item.is_featured) {
+        <span class="badge-popular">🔥 Popular</span>
+      }
+    </div>
+
+    <!-- Name & Description -->
+    <h3 class="item-name">{{ item.name }}</h3>
+    <p class="item-description">{{ item.description }}</p>
+
+    <!-- Tags -->
+    @if (item.tags && item.tags.length > 0) {
+      <div class="item-tags">
+        @for (tag of item.tags.slice(0, 3); track tag) {
+          <span class="item-tag">{{ tag }}</span>
+        }
+      </div>
+    }
+
+    <!-- Footer: Price + Add to Cart -->
+    <div class="card-footer">
+      <div class="price-block">
+        <span class="price">${{ item.price.toFixed(2) }}</span>
+      </div>
+
+      @if (isInCart) {
+        <div class="qty-controls">
+          <button class="qty-btn" (click)="decreaseQuantity()">−</button>
+          <span class="qty-value">{{ cartQuantity }}</span>
+          <button class="qty-btn qty-plus" (click)="increaseQuantity()">+</button>
+        </div>
+      } @else {
+        <button
+          class="add-btn"
+          [class.added]="added()"
+          (click)="addToCart()"
+          [disabled]="!item.is_available"
+        >
+          @if (added()) {
+            <span>✓ Added!</span>
+          } @else {
+            <span>+ Add</span>
+          }
+        </button>
+      }
+    </div>
+  </div>
+</div>

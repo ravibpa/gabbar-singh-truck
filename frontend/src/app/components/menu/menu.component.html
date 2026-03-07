@@ -1,0 +1,139 @@
+<!-- Menu Page Header -->
+<div class="menu-header">
+  <div class="menu-header-bg">
+    <div class="header-pattern"></div>
+  </div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+    <div class="text-center py-16">
+      <div class="menu-eyebrow">Our Complete Menu</div>
+      <h1 class="menu-title">
+        Food That <span class="title-highlight">Tells Stories</span>
+      </h1>
+      <p class="menu-subtitle">
+        Every dish crafted with generations of love, authentic spices, and the spirit of India
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Menu Controls Bar -->
+<div class="menu-controls-bar sticky top-20 z-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="controls-inner">
+
+      <!-- Category Tabs -->
+      <div class="tabs-container">
+        @for (tab of tabs; track tab.id) {
+          <button
+            class="menu-tab"
+            [class.active]="activeTab() === tab.id"
+            (click)="setTab(tab.id)"
+          >
+            <span>{{ tab.icon }}</span>
+            <span>{{ tab.label }}</span>
+          </button>
+        }
+      </div>
+
+      <!-- Search & Filter Row -->
+      <div class="filter-row">
+        <!-- Search -->
+        <div class="search-wrapper">
+          <span class="search-icon">🔍</span>
+          <input
+            type="text"
+            placeholder="Search dishes..."
+            class="search-input"
+            [value]="searchQuery()"
+            (input)="onSearch($any($event.target).value)"
+          />
+          @if (searchQuery()) {
+            <button class="search-clear" (click)="onSearch('')">✕</button>
+          }
+        </div>
+
+        <!-- Veg Filter -->
+        <div class="veg-filter-group">
+          <button
+            class="veg-filter-btn"
+            [class.active]="vegFilter() === 'all'"
+            (click)="setVegFilter('all')"
+          >
+            All
+          </button>
+          <button
+            class="veg-filter-btn veg"
+            [class.active]="vegFilter() === 'veg'"
+            (click)="setVegFilter('veg')"
+          >
+            🟢 Veg
+          </button>
+          <button
+            class="veg-filter-btn nonveg"
+            [class.active]="vegFilter() === 'nonveg'"
+            (click)="setVegFilter('nonveg')"
+          >
+            🔴 Non-Veg
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Menu Content -->
+<div class="menu-content-area">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+
+    <!-- Loading State -->
+    @if (menuService.loading()) {
+      <div class="loading-grid">
+        @for (s of [1,2,3,4,5,6]; track s) {
+          <div class="skeleton h-72 rounded-2xl"></div>
+        }
+      </div>
+    }
+
+    <!-- Empty State -->
+    @else if (menuService.filteredItems().length === 0) {
+      <div class="empty-state reveal">
+        <div class="empty-icon">😔</div>
+        <h3>No dishes found</h3>
+        <p>Try adjusting your search or filters</p>
+        @if (hasActiveFilters) {
+          <button class="btn-primary mt-4" (click)="clearFilters()">
+            Clear Filters
+          </button>
+        }
+      </div>
+    }
+
+    <!-- Items grouped by category -->
+    @else {
+      @for (group of categoryGroups; track group.category.id) {
+        <div class="category-section reveal">
+
+          <!-- Category Header -->
+          <div class="category-header">
+            <div class="category-icon">{{ group.category.icon }}</div>
+            <div class="category-info">
+              <h2 class="category-name">{{ group.category.name }}</h2>
+              @if (group.category.description) {
+                <p class="category-desc">{{ group.category.description }}</p>
+              }
+            </div>
+            <div class="category-count">{{ group.items.length }} items</div>
+          </div>
+
+          <!-- Items Grid -->
+          <div class="items-grid">
+            @for (item of group.items; track item.id) {
+              <app-menu-item-card [item]="item" />
+            }
+          </div>
+        </div>
+      }
+    }
+
+  </div>
+</div>

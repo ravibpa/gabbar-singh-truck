@@ -1,0 +1,111 @@
+<footer class="footer">
+  <!-- Top wave decoration -->
+  <div class="footer-wave">
+    <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,30 C360,60 720,0 1080,30 C1260,45 1380,15 1440,30 L1440,60 L0,60 Z"
+            fill="#1A0A00"/>
+    </svg>
+  </div>
+
+  <div class="footer-body">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="footer-grid">
+
+        <!-- Brand Column -->
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <span class="logo-emoji">🌶️</span>
+            <div>
+              <div class="logo-name">Gabbar Singh Truck</div>
+              <div class="logo-tagline">Authentic Desi Flavors</div>
+            </div>
+          </div>
+          <p class="brand-description">
+            Born in Punjab. Raised on the road. Bringing India's most explosive
+            street food flavors to your city. No mercy on taste.
+          </p>
+          <!-- Social Links -->
+          <div class="social-links">
+            <a href="#" class="social-btn" aria-label="Instagram">
+              <span>📸</span>
+            </a>
+            <a href="#" class="social-btn" aria-label="Facebook">
+              <span>👥</span>
+            </a>
+            <a href="#" class="social-btn" aria-label="Twitter">
+              <span>🐦</span>
+            </a>
+            <a href="#" class="social-btn" aria-label="YouTube">
+              <span>🎬</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-col">
+          <h4 class="footer-heading">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a routerLink="/">🏠 Home</a></li>
+            <li><a routerLink="/menu">🍛 Full Menu</a></li>
+            <li><a routerLink="/menu" [queryParams]="{type: 'north'}">🏔️ North Indian</a></li>
+            <li><a routerLink="/menu" [queryParams]="{type: 'south'}">🌴 South Indian</a></li>
+            <li><a routerLink="/menu" [queryParams]="{type: 'special'}">⭐ Chef's Special</a></li>
+            <li><a href="#about">✨ Our Story</a></li>
+          </ul>
+        </div>
+
+        <!-- Hours -->
+        <div class="footer-col">
+          <h4 class="footer-heading">Opening Hours</h4>
+          <ul class="hours-list">
+            @for (day of days; track day) {
+              <li [class.today]="day === currentDay">
+                <span class="day-name">{{ day }}</span>
+                <span class="day-hours">{{ hours[day] }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+
+        <!-- Contact -->
+        <div class="footer-col">
+          <h4 class="footer-heading">Get in Touch</h4>
+          <div class="contact-items">
+            <div class="contact-item">
+              <span>📱</span>
+              <a href="tel:+15554242272">+1 (555) 424-2272</a>
+            </div>
+            <div class="contact-item">
+              <span>📧</span>
+              <a href="mailto:namaste@gabbarsinghtruck.com">namaste&#64;gabbarsinghtruck.com</a>
+            </div>
+            <div class="contact-item">
+              <span>📸</span>
+              <a href="#">&#64;gabbarsinghtruck</a>
+            </div>
+          </div>
+
+          <!-- Newsletter -->
+          <div class="newsletter">
+            <h5>Get Exclusive Offers</h5>
+            <div class="newsletter-form">
+              <input type="email" placeholder="Your email" class="newsletter-input" />
+              <button class="newsletter-btn">→</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="footer-bottom">
+        <p>© {{ currentYear }} Gabbar Singh Truck. All rights reserved. | Made with ❤️ and lots of 🌶️</p>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a routerLink="/admin/login" class="admin-link">Admin</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

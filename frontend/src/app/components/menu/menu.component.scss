@@ -1,0 +1,306 @@
+// Menu Header
+.menu-header {
+  background: linear-gradient(135deg, #1A0A00, #3D1A00, #8B1A1A);
+  position: relative;
+  overflow: hidden;
+
+  .header-pattern {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Ccircle cx='30' cy='30' r='25' fill='none' stroke='%23C9A22710' stroke-width='2'/%3E%3Ccircle cx='30' cy='30' r='15' fill='none' stroke='%23FF6B1A08' stroke-width='1'/%3E%3C/svg%3E");
+  }
+}
+
+.menu-eyebrow {
+  display: inline-block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #C9A227;
+  border: 1px solid rgba(201, 162, 39, 0.3);
+  padding: 4px 16px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+
+.menu-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 900;
+  color: white;
+  margin-bottom: 16px;
+
+  .title-highlight {
+    background: linear-gradient(135deg, #FF6B1A, #FFD700);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+.menu-subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  color: rgba(255, 248, 240, 0.65);
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+// Controls Bar
+.menu-controls-bar {
+  background: rgba(255, 248, 240, 0.97);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+  box-shadow: 0 4px 24px rgba(26, 10, 0, 0.08);
+}
+
+.controls-inner {
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tabs-container {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+.menu-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  border-radius: 40px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+  color: rgba(44, 24, 16, 0.6);
+  background: rgba(201, 162, 39, 0.1);
+
+  &.active {
+    background: linear-gradient(135deg, #FF6B1A, #8B1A1A);
+    color: white;
+    box-shadow: 0 4px 16px rgba(255, 107, 26, 0.3);
+    transform: scale(1.03);
+  }
+
+  &:not(.active):hover {
+    background: rgba(255, 107, 26, 0.12);
+    color: #FF6B1A;
+  }
+}
+
+// Filter Row
+.filter-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 10px 40px 10px 40px;
+    border-radius: 40px;
+    border: 2px solid rgba(201, 162, 39, 0.25);
+    background: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.875rem;
+    color: #2C1810;
+    outline: none;
+    transition: all 0.2s ease;
+
+    &:focus {
+      border-color: #FF6B1A;
+      box-shadow: 0 0 0 3px rgba(255, 107, 26, 0.1);
+    }
+
+    &::placeholder { color: rgba(44, 24, 16, 0.4); }
+  }
+
+  .search-clear {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(44, 24, 16, 0.1);
+    border: none;
+    cursor: pointer;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(44, 24, 16, 0.6);
+
+    &:hover { background: rgba(255, 107, 26, 0.2); color: #FF6B1A; }
+  }
+}
+
+.veg-filter-group {
+  display: flex;
+  gap: 6px;
+}
+
+.veg-filter-btn {
+  padding: 8px 14px;
+  border-radius: 30px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid rgba(201, 162, 39, 0.25);
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: rgba(44, 24, 16, 0.6);
+  white-space: nowrap;
+
+  &.active {
+    color: white;
+    border-color: transparent;
+
+    &:not(.veg):not(.nonveg) {
+      background: linear-gradient(135deg, #FF6B1A, #C9A227);
+    }
+  }
+
+  &.veg.active { background: #138808; border-color: #138808; }
+  &.nonveg.active { background: #8B1A1A; border-color: #8B1A1A; }
+
+  &:not(.active):hover { border-color: rgba(255, 107, 26, 0.3); }
+}
+
+// Menu Content
+.menu-content-area {
+  min-height: 60vh;
+  background: #FFF8F0;
+}
+
+.loading-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+// Empty State
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+
+  .empty-icon { font-size: 5rem; margin-bottom: 24px; }
+
+  h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: #2C1810;
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-family: 'Poppins', sans-serif;
+    color: rgba(44, 24, 16, 0.5);
+    font-size: 0.95rem;
+  }
+}
+
+// Category Section
+.category-section {
+  margin-bottom: 64px;
+}
+
+.category-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid rgba(201, 162, 39, 0.2);
+
+  @media (max-width: 640px) {
+    flex-wrap: wrap;
+  }
+}
+
+.category-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.category-info {
+  flex: 1;
+}
+
+.category-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #2C1810;
+  margin-bottom: 4px;
+}
+
+.category-desc {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.875rem;
+  color: rgba(44, 24, 16, 0.55);
+  line-height: 1.5;
+  max-width: 500px;
+}
+
+.category-count {
+  flex-shrink: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(44, 24, 16, 0.4);
+  background: rgba(201, 162, 39, 0.1);
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(201, 162, 39, 0.2);
+  align-self: center;
+}
+
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 480px) {
+  .items-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .veg-filter-btn {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+}

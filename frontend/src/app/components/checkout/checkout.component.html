@@ -1,0 +1,292 @@
+<div class="checkout-page">
+  <div class="checkout-header">
+    <div class="max-w-6xl mx-auto px-4">
+      <a routerLink="/menu" class="back-link">← Back to Menu</a>
+      <h1 class="checkout-title">Checkout</h1>
+      <!-- Steps indicator -->
+      <div class="steps-indicator">
+        <div class="step-item" [class.active]="step() >= 1" [class.done]="step() > 1">
+          <div class="step-num">{{ step() > 1 ? '✓' : '1' }}</div>
+          <span>Your Details</span>
+        </div>
+        <div class="step-line" [class.done]="step() > 1"></div>
+        <div class="step-item" [class.active]="step() >= 2">
+          <div class="step-num">2</div>
+          <span>Payment</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-6xl mx-auto px-4 py-10">
+    <div class="checkout-grid">
+
+      <!-- Left: Form -->
+      <div class="checkout-form-section">
+
+        <!-- ===== STEP 1: Customer Info ===== -->
+        @if (step() === 1) {
+          <form [formGroup]="form" (ngSubmit)="proceedToPayment()" class="info-form">
+
+            <div class="form-section-title">
+              <span>👤</span> Your Information
+            </div>
+
+            <!-- Name -->
+            <div class="form-group">
+              <label class="form-label" for="name">Full Name *</label>
+              <input id="name" type="text" formControlName="name" class="form-input"
+                     [class.error]="hasError('name')" placeholder="Rajesh Kumar" />
+              @if (hasError('name')) { <p class="field-error">{{ getError('name') }}</p> }
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+              <label class="form-label" for="email">Email Address *</label>
+              <input id="email" type="email" formControlName="email" class="form-input"
+                     [class.error]="hasError('email')" placeholder="rajesh@example.com" />
+              @if (hasError('email')) { <p class="field-error">{{ getError('email') }}</p> }
+            </div>
+
+            <!-- Phone -->
+            <div class="form-group">
+              <label class="form-label" for="phone">Phone Number *</label>
+              <input id="phone" type="tel" formControlName="phone" class="form-input"
+                     [class.error]="hasError('phone')" placeholder="+1 (555) 123-4567" />
+              @if (hasError('phone')) { <p class="field-error">{{ getError('phone') }}</p> }
+            </div>
+
+            <!-- Order Type -->
+            <div class="form-section-title" style="margin-top: 24px;">
+              <span>📦</span> Order Type
+            </div>
+
+            <div class="order-type-cards">
+              <label class="order-type-card" [class.selected]="orderType === 'pickup'">
+                <input type="radio" formControlName="order_type" value="pickup" />
+                <div class="type-card-content">
+                  <span class="type-icon">🏃</span>
+                  <strong>Pickup</strong>
+                  <span>~20 mins</span>
+                </div>
+              </label>
+              <label class="order-type-card" [class.selected]="orderType === 'delivery'">
+                <input type="radio" formControlName="order_type" value="delivery" />
+                <div class="type-card-content">
+                  <span class="type-icon">🛵</span>
+                  <strong>Delivery</strong>
+                  <span>~45 mins</span>
+                </div>
+              </label>
+            </div>
+
+            <!-- Delivery Address -->
+            @if (orderType === 'delivery') {
+              <div class="delivery-address-section">
+                <div class="form-section-title">
+                  <span>📍</span> Delivery Address
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Street Address *</label>
+                  <input type="text" formControlName="street" class="form-input"
+                         [class.error]="hasError('street')" placeholder="123 Main Street, Apt 4B" />
+                  @if (hasError('street')) { <p class="field-error">{{ getError('street') }}</p> }
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">City *</label>
+                    <input type="text" formControlName="city" class="form-input"
+                           [class.error]="hasError('city')" placeholder="City" />
+                    @if (hasError('city')) { <p class="field-error">{{ getError('city') }}</p> }
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">State *</label>
+                    <input type="text" formControlName="state" class="form-input"
+                           [class.error]="hasError('state')" placeholder="CA" maxlength="2" />
+                    @if (hasError('state')) { <p class="field-error">{{ getError('state') }}</p> }
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">ZIP *</label>
+                    <input type="text" formControlName="zip" class="form-input"
+                           [class.error]="hasError('zip')" placeholder="90210" />
+                    @if (hasError('zip')) { <p class="field-error">{{ getError('zip') }}</p> }
+                  </div>
+                </div>
+              </div>
+            }
+
+            <!-- Special Notes -->
+            <div class="form-group">
+              <label class="form-label">Special Instructions (optional)</label>
+              <textarea formControlName="notes" class="form-input" rows="3"
+                        placeholder="Any special requests? Allergies? Spice preferences?"></textarea>
+            </div>
+
+            <!-- Error -->
+            @if (error()) {
+              <div class="checkout-error">⚠️ {{ error() }}</div>
+            }
+
+            <!-- Submit -->
+            <button type="submit" class="btn-primary w-full py-4 text-base" [disabled]="loading()">
+              @if (loading()) {
+                <span class="loading-spinner"></span>
+                <span>Processing...</span>
+              } @else {
+                <span>Continue to Payment →</span>
+              }
+            </button>
+          </form>
+        }
+
+        <!-- ===== STEP 2: Payment ===== -->
+        @if (step() === 2) {
+          <div class="payment-section">
+            <button class="back-link-btn" (click)="goBack()">← Back to Details</button>
+
+            <div class="form-section-title">
+              <span>💳</span> Secure Payment
+            </div>
+
+            <div class="stripe-security-badge">
+              <span>🔒</span>
+              <span>Secured by Stripe · SSL Encrypted</span>
+            </div>
+
+            <!-- Stripe Payment Element -->
+            <div class="stripe-wrapper">
+              <div id="stripe-payment-element" class="stripe-element-container"></div>
+            </div>
+
+            <!-- Error -->
+            @if (error()) {
+              <div class="checkout-error">⚠️ {{ error() }}</div>
+            }
+
+            <!-- Pay Button -->
+            <button
+              class="pay-btn"
+              (click)="confirmPayment()"
+              [disabled]="paymentLoading()"
+            >
+              @if (paymentLoading()) {
+                <span class="loading-spinner white"></span>
+                <span>Processing Payment...</span>
+              } @else {
+                <span>🌶️</span>
+                <span>Pay ${{ cartService.total().toFixed(2) }}</span>
+              }
+            </button>
+
+            <p class="payment-notice">
+              By placing this order, you agree to our terms of service.
+              Your payment is securely processed by Stripe.
+            </p>
+          </div>
+        }
+      </div>
+
+      <!-- Right: Order Summary -->
+      <div class="order-summary-section">
+        <div class="order-summary-card">
+          <h3 class="summary-title">🍛 Order Summary</h3>
+
+          <!-- Items -->
+          <div class="summary-items">
+            @for (item of cartService.items(); track item.id) {
+              <div class="summary-item">
+                <div class="summary-item-left">
+                  <span class="item-emoji">{{ item.is_vegetarian ? '🟢' : '🔴' }}</span>
+                  <div>
+                    <p class="summary-item-name">{{ item.name }}</p>
+                    <p class="summary-item-qty">× {{ item.quantity }}</p>
+                  </div>
+                </div>
+                <span class="summary-item-price">
+                  ${{ (item.price * item.quantity).toFixed(2) }}
+                </span>
+              </div>
+            }
+          </div>
+
+          <!-- Promo Code -->
+          @if (!cartService.promoCode()) {
+            <div class="promo-section">
+              <div class="promo-input-row">
+                <input
+                  type="text"
+                  class="promo-input"
+                  placeholder="Promo code (e.g. GABBAR10)"
+                  [value]="promoInput()"
+                  (input)="promoInput.set($any($event.target).value.toUpperCase())"
+                  (keyup.enter)="applyPromo()"
+                />
+                <button
+                  class="promo-btn"
+                  (click)="applyPromo()"
+                  [disabled]="promoLoading() || !promoInput()"
+                >
+                  {{ promoLoading() ? '...' : 'Apply' }}
+                </button>
+              </div>
+            </div>
+          } @else {
+            <div class="promo-applied">
+              <span>🎉 {{ cartService.promoCode() }} applied!</span>
+              <span>−${{ cartService.discount().toFixed(2) }}</span>
+            </div>
+          }
+
+          <!-- Divider -->
+          <div class="summary-divider"></div>
+
+          <!-- Totals -->
+          <div class="summary-totals">
+            <div class="total-line">
+              <span>Subtotal</span>
+              <span>${{ cartService.subtotal().toFixed(2) }}</span>
+            </div>
+            <div class="total-line">
+              <span>Tax (8%)</span>
+              <span>${{ cartService.tax().toFixed(2) }}</span>
+            </div>
+            <div class="total-line">
+              <span>
+                Delivery
+                @if (orderType === 'pickup') { (Pickup - Free!) }
+              </span>
+              @if (cartService.actualDeliveryFee() === 0 || orderType === 'pickup') {
+                <span class="free-text">FREE</span>
+              } @else {
+                <span>${{ cartService.actualDeliveryFee().toFixed(2) }}</span>
+              }
+            </div>
+            @if (cartService.discount() > 0) {
+              <div class="total-line discount">
+                <span>Promo Discount</span>
+                <span>−${{ cartService.discount().toFixed(2) }}</span>
+              </div>
+            }
+          </div>
+
+          <div class="grand-total">
+            <span>Total</span>
+            <span>${{ cartService.total().toFixed(2) }}</span>
+          </div>
+
+          <!-- Estimated Time -->
+          <div class="estimated-time">
+            <span>⏱️</span>
+            <span>
+              Estimated {{ orderType === 'pickup' ? 'pickup' : 'delivery' }}:
+              <strong>{{ orderType === 'pickup' ? '20 mins' : '45 mins' }}</strong>
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,371 @@
+<div class="admin-layout">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-logo">
+      <span>🌶️</span>
+      <div>
+        <div class="brand-name">Gabbar Singh</div>
+        <div class="brand-sub">Admin Panel</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item" [class.active]="activeTab() === 'dashboard'" (click)="setTab('dashboard')">
+        <span>📊</span> Dashboard
+      </button>
+      <button class="nav-item" [class.active]="activeTab() === 'menu'" (click)="setTab('menu')">
+        <span>🍛</span> Menu Management
+        @if (totalItems() > 0) {
+          <span class="nav-badge">{{ totalItems() }}</span>
+        }
+      </button>
+      <button class="nav-item" [class.active]="activeTab() === 'orders'" (click)="setTab('orders')">
+        <span>📋</span> Orders
+        @if (pendingOrders > 0) {
+          <span class="nav-badge urgent">{{ pendingOrders }}</span>
+        }
+      </button>
+      <button class="nav-item" [class.active]="activeTab() === 'settings'" (click)="setTab('settings')">
+        <span>⚙️</span> Settings
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a routerLink="/" class="sidebar-link">← View Website</a>
+      <button (click)="auth.signOut()" class="sidebar-signout">Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+
+    <!-- Header -->
+    <div class="admin-top-bar">
+      <h1 class="admin-page-title">
+        @switch (activeTab()) {
+          @case ('dashboard') { Dashboard }
+          @case ('menu') { Menu Management }
+          @case ('orders') { Orders }
+          @case ('settings') { Settings }
+        }
+      </h1>
+      <div class="admin-user">
+        <span>👤</span>
+        <span>{{ auth.user()?.email }}</span>
+      </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    @if (successMsg()) {
+      <div class="alert-success">✅ {{ successMsg() }}</div>
+    }
+    @if (error() && !showItemModal()) {
+      <div class="alert-error">⚠️ {{ error() }}</div>
+    }
+
+    <!-- ===== DASHBOARD ===== -->
+    @if (activeTab() === 'dashboard') {
+      <div class="dashboard-content">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">📦</div>
+            <div class="stat-info">
+              <div class="stat-value">{{ todayOrders() }}</div>
+              <div class="stat-label">Today's Orders</div>
+            </div>
+          </div>
+          <div class="stat-card gold">
+            <div class="stat-icon">💰</div>
+            <div class="stat-info">
+              <div class="stat-value">${{ todayRevenue().toFixed(2) }}</div>
+              <div class="stat-label">Today's Revenue</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🍛</div>
+            <div class="stat-info">
+              <div class="stat-value">{{ totalItems() }}</div>
+              <div class="stat-label">Menu Items</div>
+            </div>
+          </div>
+          <div class="stat-card urgent">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-info">
+              <div class="stat-value">{{ pendingOrders }}</div>
+              <div class="stat-label">Pending Orders</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Orders Preview -->
+        <div class="section-card">
+          <div class="section-card-header">
+            <h2>Recent Orders</h2>
+            <button (click)="setTab('orders')" class="view-all-btn">View All →</button>
+          </div>
+          <div class="orders-list">
+            @for (order of orders().slice(0, 5); track order.id) {
+              <div class="order-row">
+                <div class="order-number">{{ order.order_number }}</div>
+                <div class="order-customer">{{ order.customer_name }}</div>
+                <div class="order-total">${{ order.total.toFixed(2) }}</div>
+                <div class="order-status">
+                  <span class="status-badge" [class]="getStatusClass(order.status!)">
+                    {{ order.status }}
+                  </span>
+                </div>
+              </div>
+            }
+            @empty {
+              <p class="empty-message">No orders yet</p>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ===== MENU MANAGEMENT ===== -->
+    @if (activeTab() === 'menu') {
+      <div class="menu-management">
+        <div class="section-toolbar">
+          <button (click)="openAddItem()" class="btn-primary">
+            + Add Menu Item
+          </button>
+        </div>
+
+        <!-- Items grouped by category -->
+        @for (cat of menuService.categories(); track cat.id) {
+          <div class="section-card mb-6">
+            <div class="section-card-header">
+              <h2>{{ cat.icon }} {{ cat.name }}</h2>
+              <span class="category-type-badge type-{{ cat.type }}">{{ cat.type }}</span>
+            </div>
+
+            <div class="admin-items-table">
+              <div class="table-header">
+                <span>Name</span>
+                <span>Price</span>
+                <span>Spice</span>
+                <span>Veg</span>
+                <span>Status</span>
+                <span>Actions</span>
+              </div>
+
+              @for (item of allMenuItems().filter(i => i.category_id === cat.id); track item.id) {
+                <div class="table-row" [class.unavailable]="!item.is_available">
+                  <div class="item-name-cell">
+                    <strong>{{ item.name }}</strong>
+                    @if (item.is_featured) { <span class="mini-badge">⭐ Featured</span> }
+                    @if (item.is_special) { <span class="mini-badge special">🔥 Special</span> }
+                  </div>
+                  <div>${{ item.price.toFixed(2) }}</div>
+                  <div>
+                    @for (l of [1,2,3,4,5]; track l) {
+                      <span [class.active-chili]="l <= item.spice_level">🌶️</span>
+                    }
+                  </div>
+                  <div>{{ item.is_vegetarian ? '🟢' : '🔴' }}</div>
+                  <div>
+                    <button
+                      (click)="toggleAvailability(item)"
+                      class="availability-toggle"
+                      [class.available]="item.is_available"
+                      [class.unavailable-btn]="!item.is_available"
+                    >
+                      {{ item.is_available ? '✅ Available' : '❌ Unavailable' }}
+                    </button>
+                  </div>
+                  <div class="action-btns">
+                    <button (click)="openEditItem(item)" class="edit-btn">✏️ Edit</button>
+                    <button (click)="deleteItem(item)" class="delete-btn">🗑️</button>
+                  </div>
+                </div>
+              }
+              @empty {
+                <div class="empty-message">No items in this category</div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ===== ORDERS ===== -->
+    @if (activeTab() === 'orders') {
+      <div class="orders-management">
+        <div class="section-card">
+          <div class="section-card-header">
+            <h2>All Orders</h2>
+            <button (click)="loadOrders()" class="refresh-btn">🔄 Refresh</button>
+          </div>
+
+          @if (orders().length === 0) {
+            <p class="empty-message">No orders found</p>
+          } @else {
+            <div class="full-orders-list">
+              @for (order of orders(); track order.id) {
+                <div class="order-card">
+                  <div class="order-card-header">
+                    <div class="order-meta">
+                      <strong class="order-num">{{ order.order_number }}</strong>
+                      <span class="order-time">{{ order.created_at | date:'MMM d, h:mm a' }}</span>
+                    </div>
+                    <span class="status-badge" [class]="getStatusClass(order.status!)">
+                      {{ order.status }}
+                    </span>
+                  </div>
+
+                  <div class="order-card-body">
+                    <div class="order-customer-info">
+                      <span>👤 {{ order.customer_name }}</span>
+                      <span>📧 {{ order.customer_email }}</span>
+                      @if (order.customer_phone) {
+                        <span>📱 {{ order.customer_phone }}</span>
+                      }
+                      <span class="order-type-label">{{ order.order_type === 'delivery' ? '🛵 Delivery' : '🏃 Pickup' }}</span>
+                    </div>
+
+                    <div class="order-total-info">
+                      <span class="order-grand-total">${{ order.total.toFixed(2) }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Status Actions -->
+                  <div class="order-actions">
+                    <span class="actions-label">Update Status:</span>
+                    @for (s of ['confirmed', 'preparing', 'ready', 'delivered', 'cancelled']; track s) {
+                      <button
+                        class="status-action-btn"
+                        [class.current]="order.status === s"
+                        (click)="updateOrderStatus(order, s as any)"
+                      >
+                        {{ s }}
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- ===== SETTINGS ===== -->
+    @if (activeTab() === 'settings') {
+      <div class="settings-content">
+        <div class="section-card">
+          <h2>Site Settings</h2>
+          <p class="text-sm text-gray-500 mt-2">
+            Manage your site settings directly in Supabase via the site_settings table.
+            You can update business hours, hero content, and delivery settings from there.
+          </p>
+
+          <div class="settings-links mt-6">
+            <a href="https://app.supabase.com" target="_blank" class="settings-link-card">
+              <span>🗄️</span>
+              <div>
+                <strong>Supabase Dashboard</strong>
+                <p>Manage database tables & settings</p>
+              </div>
+              <span>→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    }
+
+  </main>
+</div>
+
+<!-- ===== ITEM MODAL ===== -->
+@if (showItemModal()) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ editingItem() ? 'Edit' : 'Add' }} Menu Item</h2>
+        <button (click)="closeModal()" class="modal-close">✕</button>
+      </div>
+
+      <form [formGroup]="itemForm" (ngSubmit)="saveItem()" class="modal-form">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label class="form-label">Item Name *</label>
+              <input type="text" formControlName="name" class="form-input" placeholder="e.g. Butter Chicken" />
+            </div>
+
+            <div class="form-group full-width">
+              <label class="form-label">Description</label>
+              <textarea formControlName="description" class="form-input" rows="3"
+                        placeholder="Describe the dish..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Price ($) *</label>
+              <input type="number" formControlName="price" class="form-input"
+                     step="0.01" min="0.01" placeholder="0.00" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Category *</label>
+              <select formControlName="category_id" class="form-input">
+                <option value="">Select Category</option>
+                @for (cat of menuService.categories(); track cat.id) {
+                  <option [value]="cat.id">{{ cat.name }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Spice Level</label>
+              <select formControlName="spice_level" class="form-input">
+                @for (l of spiceLevels; track l) {
+                  <option [value]="l">{{ '🌶️'.repeat(l) }} Level {{ l }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Image URL</label>
+              <input type="text" formControlName="image_url" class="form-input"
+                     placeholder="https://..." />
+            </div>
+
+            <div class="form-group full-width">
+              <div class="checkbox-group">
+                <label class="checkbox-item">
+                  <input type="checkbox" formControlName="is_vegetarian" />
+                  <span>🟢 Vegetarian</span>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" formControlName="is_available" />
+                  <span>✅ Available</span>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" formControlName="is_featured" />
+                  <span>⭐ Featured</span>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" formControlName="is_special" />
+                  <span>🔥 Chef's Special</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        @if (error()) {
+          <div class="alert-error mx-6">⚠️ {{ error() }}</div>
+        }
+
+        <div class="modal-footer">
+          <button type="button" (click)="closeModal()" class="btn-cancel">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="saving()">
+            @if (saving()) { Saving... } @else { {{ editingItem() ? 'Update Item' : 'Add Item' }} }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

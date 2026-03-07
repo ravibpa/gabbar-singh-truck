@@ -1,0 +1,522 @@
+// ============================================================
+// GABBAR SINGH TRUCK - Global Styles
+// 2026 Indian Premium Design System
+// ============================================================
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// ============================================================
+// GOOGLE FONTS IMPORT
+// ============================================================
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@600;700&family=Baloo+Bhai+2:wght@400;500;600;700;800&display=swap');
+
+// ============================================================
+// CSS CUSTOM PROPERTIES (Design Tokens)
+// ============================================================
+:root {
+  --color-saffron: #FF6B1A;
+  --color-saffron-dark: #E05A00;
+  --color-maroon: #8B1A1A;
+  --color-maroon-dark: #6B0F0F;
+  --color-gold: #C9A227;
+  --color-gold-light: #FFD700;
+  --color-cream: #FFF8F0;
+  --color-cream-dark: #F5E6D3;
+  --color-spice-warm: #E8C99A;
+  --color-dark: #2C1810;
+  --color-deep: #1A0A00;
+  --color-green-india: #138808;
+
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Poppins', sans-serif;
+  --font-accent: 'Dancing Script', cursive;
+  --font-hindi: 'Baloo Bhai 2', sans-serif;
+
+  --shadow-card: 0 4px 24px rgba(26, 10, 0, 0.12);
+  --shadow-card-hover: 0 12px 40px rgba(26, 10, 0, 0.24);
+  --shadow-glow: 0 0 30px rgba(255, 107, 26, 0.4);
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+
+  --transition-fast: 0.15s ease;
+  --transition-med: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+// ============================================================
+// BASE STYLES
+// ============================================================
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-cream);
+  color: var(--color-dark);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// ============================================================
+// TYPOGRAPHY
+// ============================================================
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-deep);
+}
+
+// ============================================================
+// INDIAN PATTERN SVG BACKGROUNDS
+// ============================================================
+.pattern-mandala {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 5L32.4 15H42L34 21L36.4 31L30 25L23.6 31L26 21L18 15H27.6L30 5z' fill='%23C9A22720'/%3E%3Ccircle cx='30' cy='30' r='20' fill='none' stroke='%23C9A22715' stroke-width='1'/%3E%3Ccircle cx='30' cy='30' r='12' fill='none' stroke='%23C9A22715' stroke-width='1'/%3E%3C/svg%3E");
+  background-size: 60px 60px;
+}
+
+.pattern-paisley {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='8' fill='none' stroke='%23FF6B1A20' stroke-width='1'/%3E%3Ccircle cx='20' cy='20' r='15' fill='none' stroke='%23FF6B1A10' stroke-width='1'/%3E%3C/svg%3E");
+  background-size: 40px 40px;
+}
+
+// ============================================================
+// INDIAN BORDER DECORATIVE
+// ============================================================
+.border-indian {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(white, white) padding-box,
+    linear-gradient(135deg, var(--color-saffron), var(--color-gold), var(--color-maroon)) border-box;
+}
+
+// ============================================================
+// BUTTON STYLES
+// ============================================================
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300;
+  background: linear-gradient(135deg, #FF6B1A 0%, #8B1A1A 100%);
+  box-shadow: 0 4px 16px rgba(255, 107, 26, 0.35);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255, 107, 26, 0.5);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300;
+  color: var(--color-saffron);
+  border: 2px solid var(--color-saffron);
+  background: transparent;
+
+  &:hover {
+    background: var(--color-saffron);
+    color: white;
+    transform: translateY(-2px);
+  }
+}
+
+.btn-gold {
+  @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300;
+  background: linear-gradient(135deg, #C9A227 0%, #FFD700 50%, #C9A227 100%);
+  color: var(--color-deep);
+  box-shadow: 0 4px 16px rgba(201, 162, 39, 0.4);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(201, 162, 39, 0.6);
+  }
+}
+
+// ============================================================
+// CARD STYLES
+// ============================================================
+.card-glass {
+  background: rgba(255, 248, 240, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(201, 162, 39, 0.2);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  transition: all var(--transition-med);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+    border-color: rgba(255, 107, 26, 0.3);
+  }
+}
+
+.card-menu {
+  @apply overflow-hidden rounded-2xl transition-all duration-300 cursor-pointer;
+  background: white;
+  box-shadow: 0 2px 16px rgba(26, 10, 0, 0.08);
+
+  &:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 0 16px 48px rgba(26, 10, 0, 0.16);
+  }
+}
+
+// ============================================================
+// GRADIENT TEXT
+// ============================================================
+.text-gradient-saffron {
+  background: linear-gradient(135deg, #FF6B1A 0%, #FFD700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #C9A227 0%, #FFD700 50%, #C9A227 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-maroon {
+  background: linear-gradient(135deg, #8B1A1A 0%, #FF6B1A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// ============================================================
+// SECTION STYLES
+// ============================================================
+.section-heading {
+  @apply text-4xl md:text-5xl font-bold mb-4;
+  font-family: var(--font-heading);
+}
+
+.section-divider {
+  @apply flex items-center justify-center gap-4 my-6;
+
+  &::before,
+  &::after {
+    content: '';
+    height: 1px;
+    width: 80px;
+    background: linear-gradient(90deg, transparent, var(--color-gold));
+  }
+
+  &::after {
+    background: linear-gradient(90deg, var(--color-gold), transparent);
+  }
+
+  .divider-icon {
+    font-size: 1.5rem;
+    color: var(--color-gold);
+  }
+}
+
+// ============================================================
+// BADGE STYLES
+// ============================================================
+.badge-veg {
+  @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold;
+  background: rgba(19, 136, 8, 0.12);
+  color: #138808;
+  border: 1px solid rgba(19, 136, 8, 0.3);
+}
+
+.badge-nonveg {
+  @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold;
+  background: rgba(139, 26, 26, 0.12);
+  color: #8B1A1A;
+  border: 1px solid rgba(139, 26, 26, 0.3);
+}
+
+.badge-special {
+  @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold;
+  background: linear-gradient(135deg, #FF6B1A, #C9A227);
+  color: white;
+}
+
+// ============================================================
+// SPICE LEVEL INDICATORS
+// ============================================================
+.spice-indicator {
+  @apply flex items-center gap-0.5;
+
+  .chili {
+    font-size: 12px;
+    opacity: 0.3;
+    transition: opacity var(--transition-fast);
+
+    &.active {
+      opacity: 1;
+    }
+  }
+}
+
+// ============================================================
+// CART SIDEBAR
+// ============================================================
+.cart-overlay {
+  @apply fixed inset-0 z-40;
+  background: rgba(26, 10, 0, 0.6);
+  backdrop-filter: blur(4px);
+  animation: fade-in 0.2s ease;
+}
+
+.cart-sidebar {
+  @apply fixed right-0 top-0 h-full z-50 flex flex-col;
+  width: min(420px, 100vw);
+  background: white;
+  box-shadow: -8px 0 48px rgba(26, 10, 0, 0.2);
+  animation: slide-in-right 0.3s ease;
+}
+
+// ============================================================
+// LOADING SKELETON
+// ============================================================
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #f0e8df 25%,
+    #e8ddd4 37%,
+    #f0e8df 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.5s ease infinite;
+  border-radius: var(--radius-sm);
+}
+
+// ============================================================
+// SCROLL ANIMATIONS
+// ============================================================
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+
+  &.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ============================================================
+// STRIPE ELEMENTS
+// ============================================================
+.stripe-element-wrapper {
+  @apply p-4 rounded-xl border-2 transition-all duration-200;
+  border-color: rgba(201, 162, 39, 0.3);
+  background: rgba(255, 248, 240, 0.5);
+
+  &:focus-within {
+    border-color: var(--color-saffron);
+    box-shadow: 0 0 0 3px rgba(255, 107, 26, 0.15);
+  }
+}
+
+// ============================================================
+// FORM STYLES
+// ============================================================
+.form-input {
+  @apply w-full px-4 py-3 rounded-xl border-2 transition-all duration-200 outline-none text-sm;
+  border-color: rgba(201, 162, 39, 0.3);
+  background: rgba(255, 248, 240, 0.5);
+  color: var(--color-dark);
+
+  &:focus {
+    border-color: var(--color-saffron);
+    box-shadow: 0 0 0 3px rgba(255, 107, 26, 0.15);
+  }
+
+  &::placeholder {
+    color: rgba(44, 24, 16, 0.4);
+  }
+}
+
+.form-label {
+  @apply block text-sm font-semibold mb-2;
+  color: var(--color-dark);
+}
+
+// ============================================================
+// NAV STYLES
+// ============================================================
+.nav-link {
+  @apply relative px-2 py-1 text-sm font-medium transition-all duration-200;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--color-saffron);
+    transform: scaleX(0);
+    transition: transform var(--transition-med);
+    border-radius: 1px;
+  }
+
+  &:hover::after,
+  &.active::after {
+    transform: scaleX(1);
+  }
+}
+
+// ============================================================
+// MENU TAB STYLES
+// ============================================================
+.menu-tab {
+  @apply px-6 py-3 rounded-full font-semibold text-sm transition-all duration-300 cursor-pointer;
+
+  &.active {
+    background: linear-gradient(135deg, #FF6B1A, #8B1A1A);
+    color: white;
+    box-shadow: 0 4px 16px rgba(255, 107, 26, 0.4);
+    transform: scale(1.05);
+  }
+
+  &:not(.active) {
+    color: var(--color-dark);
+    background: rgba(201, 162, 39, 0.1);
+
+    &:hover {
+      background: rgba(255, 107, 26, 0.15);
+      color: var(--color-saffron);
+    }
+  }
+}
+
+// ============================================================
+// TOAST NOTIFICATIONS
+// ============================================================
+.toast {
+  @apply fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-4 rounded-2xl text-white font-medium shadow-2xl;
+  animation: slide-up 0.3s ease, fade-in 0.3s ease;
+  max-width: 320px;
+
+  &.toast-success {
+    background: linear-gradient(135deg, #138808, #1a5c00);
+  }
+
+  &.toast-error {
+    background: linear-gradient(135deg, #8B1A1A, #5c0b0b);
+  }
+
+  &.toast-info {
+    background: linear-gradient(135deg, #FF6B1A, #C9A227);
+  }
+}
+
+// ============================================================
+// FLOATING ELEMENTS (decorative)
+// ============================================================
+.floating-spice {
+  position: absolute;
+  font-size: 2rem;
+  opacity: 0.15;
+  animation: float 3s ease-in-out infinite;
+  pointer-events: none;
+
+  &:nth-child(2) { animation-delay: 0.5s; }
+  &:nth-child(3) { animation-delay: 1s; }
+  &:nth-child(4) { animation-delay: 1.5s; }
+  &:nth-child(5) { animation-delay: 2s; }
+}
+
+// ============================================================
+// SCROLLBAR STYLES
+// ============================================================
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-cream);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-gold);
+  border-radius: 3px;
+
+  &:hover {
+    background: var(--color-saffron);
+  }
+}
+
+// ============================================================
+// MEDIA QUERIES
+// ============================================================
+@media (max-width: 768px) {
+  .section-heading {
+    @apply text-3xl;
+  }
+
+  .cart-sidebar {
+    width: 100vw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// ============================================================
+// KEYFRAME ANIMATIONS (CSS fallbacks for Tailwind)
+// ============================================================
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 26, 0.4); }
+  50% { box-shadow: 0 0 50px rgba(255, 107, 26, 0.8); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
