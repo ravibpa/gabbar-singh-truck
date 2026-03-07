@@ -92,6 +92,10 @@ export class AdminComponent implements OnInit {
     this.todayRevenue.set(todayOrders.reduce((sum, o) => sum + o.total, 0));
   }
 
+  getItemsForCategory(categoryId: string): MenuItem[] {
+    return this.allMenuItems().filter(i => i.category_id === categoryId);
+  }
+
   setTab(tab: AdminTab) {
     this.activeTab.set(tab);
     this.showItemModal.set(false);

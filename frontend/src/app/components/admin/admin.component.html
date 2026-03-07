@@ -151,7 +151,7 @@
                 <span>Actions</span>
               </div>
 
-              @for (item of allMenuItems().filter(i => i.category_id === cat.id); track item.id) {
+              @for (item of getItemsForCategory(cat.id); track item.id) {
                 <div class="table-row" [class.unavailable]="!item.is_available">
                   <div class="item-name-cell">
                     <strong>{{ item.name }}</strong>
@@ -237,7 +237,7 @@
                       <button
                         class="status-action-btn"
                         [class.current]="order.status === s"
-                        (click)="updateOrderStatus(order, s as any)"
+                        (click)="updateOrderStatus(order, $any(s))"
                       >
                         {{ s }}
                       </button>

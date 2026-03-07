@@ -85,17 +85,15 @@
 <div class="menu-content-area">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
 
-    <!-- Loading State -->
     @if (menuService.loading()) {
+      <!-- Loading State -->
       <div class="loading-grid">
         @for (s of [1,2,3,4,5,6]; track s) {
           <div class="skeleton h-72 rounded-2xl"></div>
         }
       </div>
-    }
-
-    <!-- Empty State -->
-    @else if (menuService.filteredItems().length === 0) {
+    } @else if (menuService.filteredItems().length === 0) {
+      <!-- Empty State -->
       <div class="empty-state reveal">
         <div class="empty-icon">😔</div>
         <h3>No dishes found</h3>
@@ -106,10 +104,8 @@
           </button>
         }
       </div>
-    }
-
-    <!-- Items grouped by category -->
-    @else {
+    } @else {
+      <!-- Items grouped by category -->
       @for (group of categoryGroups; track group.category.id) {
         <div class="category-section reveal">
 

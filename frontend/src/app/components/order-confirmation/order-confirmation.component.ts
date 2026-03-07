@@ -57,7 +57,7 @@ import { Order } from '../../models/interfaces';
               <div class="flex justify-between items-center">
                 <span class="font-body font-bold text-spice-dark">Total Paid</span>
                 <span class="font-heading text-2xl font-bold text-saffron-500">
-                  ${{ order()!.total.toFixed(2) }}
+                  \${{ order()!.total.toFixed(2) }}
                 </span>
               </div>
             </div>

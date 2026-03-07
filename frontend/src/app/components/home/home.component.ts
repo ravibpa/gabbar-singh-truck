@@ -13,6 +13,7 @@ import { MenuItem } from '../../models/interfaces';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit, AfterViewInit {
+  readonly Math = Math;
   menuService = inject(MenuService);
   private el = inject(ElementRef);
 
