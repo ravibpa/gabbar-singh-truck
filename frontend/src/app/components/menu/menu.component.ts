@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, AfterViewInit, ElementRef, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -21,6 +21,15 @@ export class MenuComponent implements OnInit, AfterViewInit {
   activeTab = signal<'all' | 'north' | 'south' | 'special'>('all');
   searchQuery = signal('');
   vegFilter = signal<'all' | 'veg' | 'nonveg'>('all');
+
+  constructor() {
+    effect(() => {
+      // Re-run scroll reveal whenever items or categories load
+      this.menuService.items();
+      this.menuService.categories();
+      setTimeout(() => this.setupScrollReveal(), 50);
+    });
+  }
 
   tabs = [
     { id: 'all', label: 'All Dishes', icon: '🍽️' },
@@ -45,16 +54,17 @@ export class MenuComponent implements OnInit, AfterViewInit {
     this.setupScrollReveal();
   }
 
+  private observer = new IntersectionObserver(
+    entries => entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('revealed');
+    }),
+    { threshold: 0.05 }
+  );
+
   private setupScrollReveal() {
-    const observer = new IntersectionObserver(
-      entries => entries.forEach(e => {
-        if (e.isIntersecting) e.target.classList.add('revealed');
-      }),
-      { threshold: 0.05 }
-    );
     setTimeout(() => {
-      this.el.nativeElement.querySelectorAll('.reveal').forEach((el: Element) => observer.observe(el));
-    }, 200);
+      this.el.nativeElement.querySelectorAll('.reveal:not(.revealed)').forEach((el: Element) => this.observer.observe(el));
+    }, 100);
   }
 
   setTab(tab: 'all' | 'north' | 'south' | 'special') {

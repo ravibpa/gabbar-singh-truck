@@ -144,7 +144,7 @@
   flex-wrap: wrap;
 }
 
-.badge-popular {
+.badge-veg, .badge-nonveg, .badge-popular {
   display: inline-flex;
   align-items: center;
   gap: 3px;
@@ -153,6 +153,21 @@
   font-family: 'Poppins', sans-serif;
   font-size: 0.65rem;
   font-weight: 600;
+}
+
+.badge-veg {
+  background: rgba(19, 136, 8, 0.1);
+  color: #138808;
+  border: 1px solid rgba(19, 136, 8, 0.25);
+}
+
+.badge-nonveg {
+  background: rgba(139, 26, 26, 0.1);
+  color: #8B1A1A;
+  border: 1px solid rgba(139, 26, 26, 0.25);
+}
+
+.badge-popular {
   background: rgba(255, 107, 26, 0.12);
   color: #FF6B1A;
   border: 1px solid rgba(255, 107, 26, 0.25);

@@ -70,12 +70,12 @@
                   <span>~20 mins</span>
                 </div>
               </label>
-              <label class="order-type-card" [class.selected]="orderType === 'delivery'">
-                <input type="radio" formControlName="order_type" value="delivery" />
+              <label class="order-type-card order-type-disabled" style="opacity:0.5;cursor:not-allowed;pointer-events:none;">
+                <input type="radio" formControlName="order_type" value="delivery" [attr.disabled]="'disabled'" />
                 <div class="type-card-content">
                   <span class="type-icon">🛵</span>
                   <strong>Delivery</strong>
-                  <span>~45 mins</span>
+                  <span class="coming-soon-badge">Coming Soon</span>
                 </div>
               </label>
             </div>

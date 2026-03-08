@@ -380,7 +380,8 @@
 
   &.badge-float-2 {
     bottom: 60px;
-    left: -20px;
+    right: -20px;
+    left: auto;
     animation: float 4s ease-in-out infinite;
     animation-delay: 1s;
     background: linear-gradient(135deg, rgba(139,26,26,0.9), rgba(255,107,26,0.9));
@@ -901,4 +902,213 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
+}
+
+// ============================================================
+// CATERING SECTION
+// ============================================================
+.catering-section {
+  padding: 80px 0;
+  background: linear-gradient(135deg, #1A0A00 0%, #3D1A00 50%, #2C1010 100%);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    right: -200px;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,107,26,0.08), transparent 70%);
+    pointer-events: none;
+  }
+}
+
+.catering-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+  margin-top: 48px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+.catering-info {
+  .catering-desc {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    color: rgba(255, 248, 240, 0.75);
+    line-height: 1.8;
+    margin-bottom: 32px;
+  }
+}
+
+.catering-perks {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.catering-perk {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+
+  .perk-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  strong {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #C9A227;
+    margin-bottom: 2px;
+  }
+
+  p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.82rem;
+    color: rgba(255, 248, 240, 0.55);
+    margin: 0;
+  }
+}
+
+.catering-form-card {
+  background: rgba(255, 248, 240, 0.04);
+  border: 1px solid rgba(201, 162, 39, 0.2);
+  border-radius: 24px;
+  padding: 36px;
+  backdrop-filter: blur(10px);
+}
+
+.catering-form-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 24px;
+}
+
+.catering-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cf-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &.cf-full {
+    grid-column: 1 / -1;
+  }
+}
+
+.cf-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(201, 162, 39, 0.8);
+}
+
+.cf-input {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(201, 162, 39, 0.2);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.875rem;
+  color: white;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+
+  &::placeholder { color: rgba(255,248,240,0.3); }
+
+  option {
+    background: #2C1810;
+    color: white;
+  }
+
+  &:focus {
+    border-color: rgba(255, 107, 26, 0.5);
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+textarea.cf-input {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.cf-error {
+  margin-top: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.82rem;
+  color: #ff6b6b;
+}
+
+.catering-submit-btn {
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #FF6B1A, #C9A227);
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.03em;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(255, 107, 26, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.catering-success {
+  text-align: center;
+  padding: 20px 0;
+
+  .success-icon { font-size: 4rem; margin-bottom: 16px; }
+
+  h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: #C9A227;
+    margin-bottom: 12px;
+  }
+
+  p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    color: rgba(255,248,240,0.7);
+    line-height: 1.7;
+  }
+
+  .mt-6 { margin-top: 24px; }
 }

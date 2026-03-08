@@ -413,9 +413,137 @@
 
     <div class="text-center mt-8 reveal">
       <p class="text-spice-dark opacity-70 mb-4">Can't find us? We do private events & catering!</p>
-      <a href="mailto:namaste@gabbarsinghtruck.com" class="btn-secondary">
-        📧 Book for Events
+      <a href="#catering" class="btn-secondary">
+        🎉 Book for Events
       </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CATERING SECTION
+     ============================================================ -->
+<section class="catering-section" id="catering">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+
+    <div class="section-header reveal">
+      <h2 class="section-heading" style="color:white;">
+        Bring Gabbar's Fire<br>
+        <span style="background:linear-gradient(135deg,#C9A227,#FF6B1A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">To Your Event</span>
+      </h2>
+      <div class="section-divider">
+        <span class="divider-icon">🎉</span>
+      </div>
+    </div>
+
+    <div class="catering-grid">
+      <!-- Left: Info -->
+      <div class="catering-info reveal">
+        <p class="catering-desc">
+          From corporate lunches to wedding receptions, we bring the authentic taste of India
+          to your special occasion. Customizable menus, full setup, and Gabbar-level service.
+        </p>
+        <div class="catering-perks">
+          <div class="catering-perk">
+            <span class="perk-icon">🍛</span>
+            <div>
+              <strong>Full Menu Available</strong>
+              <p>50+ dishes, customized to your taste</p>
+            </div>
+          </div>
+          <div class="catering-perk">
+            <span class="perk-icon">👥</span>
+            <div>
+              <strong>Any Group Size</strong>
+              <p>10 to 1000+ guests, no problem</p>
+            </div>
+          </div>
+          <div class="catering-perk">
+            <span class="perk-icon">🎪</span>
+            <div>
+              <strong>Any Event Type</strong>
+              <p>Weddings, corporate, festivals & more</p>
+            </div>
+          </div>
+          <div class="catering-perk">
+            <span class="perk-icon">✅</span>
+            <div>
+              <strong>Full Setup & Cleanup</strong>
+              <p>We handle everything end-to-end</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Form -->
+      <div class="catering-form-card reveal">
+        @if (cateringSubmitted()) {
+          <div class="catering-success">
+            <div class="success-icon">🎉</div>
+            <h3>Inquiry Received!</h3>
+            <p>We'll get back to you within 24 hours. Gabbar doesn't keep legends waiting!</p>
+            <button class="btn-secondary mt-6" (click)="cateringSubmitted.set(false)">Send Another Inquiry</button>
+          </div>
+        } @else {
+          <h3 class="catering-form-title">🌶️ Get a Free Quote</h3>
+          <div class="catering-form-grid">
+            <div class="cf-group">
+              <label class="cf-label">Your Name *</label>
+              <input type="text" [(ngModel)]="cateringName" placeholder="Rajesh Kumar" class="cf-input" />
+            </div>
+            <div class="cf-group">
+              <label class="cf-label">Phone Number *</label>
+              <input type="tel" [(ngModel)]="cateringPhone" placeholder="+1 (555) 123-4567" class="cf-input" />
+            </div>
+            <div class="cf-group cf-full">
+              <label class="cf-label">Email Address *</label>
+              <input type="email" [(ngModel)]="cateringEmail" placeholder="you@example.com" class="cf-input" />
+            </div>
+            <div class="cf-group">
+              <label class="cf-label">Event Date</label>
+              <input type="date" [(ngModel)]="cateringDate" class="cf-input" />
+            </div>
+            <div class="cf-group">
+              <label class="cf-label">Number of Guests</label>
+              <select [(ngModel)]="cateringGuests" class="cf-input">
+                <option value="">Select range...</option>
+                <option value="10-50">10 – 50 guests</option>
+                <option value="50-100">50 – 100 guests</option>
+                <option value="100-250">100 – 250 guests</option>
+                <option value="250-500">250 – 500 guests</option>
+                <option value="500+">500+ guests</option>
+              </select>
+            </div>
+            <div class="cf-group">
+              <label class="cf-label">Event Type</label>
+              <select [(ngModel)]="cateringEvent" class="cf-input">
+                <option value="">Select type...</option>
+                <option value="wedding">Wedding / Reception</option>
+                <option value="corporate">Corporate Event</option>
+                <option value="birthday">Birthday Party</option>
+                <option value="festival">Festival / Fair</option>
+                <option value="graduation">Graduation</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="cf-group cf-full">
+              <label class="cf-label">Tell us about your event</label>
+              <textarea [(ngModel)]="cateringMessage" class="cf-input" rows="3"
+                        placeholder="Any specific dishes, dietary requirements, venue details, or special requests..."></textarea>
+            </div>
+          </div>
+          @if (cateringError()) {
+            <p class="cf-error">⚠️ {{ cateringError() }}</p>
+          }
+          <button class="catering-submit-btn" (click)="submitCatering()" [disabled]="cateringLoading()">
+            @if (cateringLoading()) {
+              <span>Processing...</span>
+            } @else {
+              <span>🎉 Request Free Quote</span>
+            }
+          </button>
+        }
+      </div>
     </div>
   </div>
 </section>
