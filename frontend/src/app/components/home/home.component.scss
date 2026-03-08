@@ -828,8 +828,10 @@
   background: linear-gradient(135deg, #1A0A00, #3D1A00);
 }
 
-.section-heading {
-  color: white !important;
+// section-heading is dark on light backgrounds, white on dark backgrounds
+.about-section .section-heading,
+.locations-section .section-heading {
+  color: white;
   -webkit-text-fill-color: white;
 }
 

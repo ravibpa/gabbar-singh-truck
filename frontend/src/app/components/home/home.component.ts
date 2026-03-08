@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, ElementRef, AfterViewInit, effect } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -14,11 +14,10 @@ import { MenuItem, SiteOffer } from '../../models/interfaces';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class HomeComponent implements OnInit {
   readonly Math = Math;
   menuService = inject(MenuService);
   private supabase = inject(SupabaseService);
-  private el = inject(ElementRef);
 
   // Catering form state
   cateringName = '';
@@ -52,7 +51,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
       });
     this.cateringLoading.set(false);
     if (error) {
-      // Fallback: open mailto with form data pre-filled
       const subject = encodeURIComponent('Catering Inquiry from ' + this.cateringName);
       const body = encodeURIComponent(
         `Name: ${this.cateringName}\nPhone: ${this.cateringPhone}\nEmail: ${this.cateringEmail}` +
@@ -92,33 +90,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
         .order('sort_order', { ascending: true });
       this.activeOffers.set((data || []) as SiteOffer[]);
     } catch {}
-  }
-
-  ngAfterViewInit() {
-    this.setupScrollReveal();
-  }
-
-  private homeObserver = new IntersectionObserver(
-    entries => entries.forEach(e => {
-      if (e.isIntersecting) e.target.classList.add('revealed');
-    }),
-    { threshold: 0.08 }
-  );
-
-  constructor() {
-    effect(() => {
-      this.menuService.items();
-      this.menuService.categories();
-      setTimeout(() => this.setupScrollReveal(), 100);
-    });
-  }
-
-  private setupScrollReveal() {
-    setTimeout(() => {
-      this.el.nativeElement.querySelectorAll('.reveal:not(.revealed)').forEach((el: Element) => {
-        this.homeObserver.observe(el);
-      });
-    }, 100);
   }
 
   private randomParticleStyle(): string {
