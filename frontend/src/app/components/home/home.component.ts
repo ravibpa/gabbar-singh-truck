@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, inject, signal, ElementRef, AfterViewInit, effect } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -84,21 +84,25 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.setupScrollReveal();
   }
 
-  private setupScrollReveal() {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('revealed');
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
+  private homeObserver = new IntersectionObserver(
+    entries => entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('revealed');
+    }),
+    { threshold: 0.08 }
+  );
 
+  constructor() {
+    effect(() => {
+      this.menuService.items();
+      this.menuService.categories();
+      setTimeout(() => this.setupScrollReveal(), 100);
+    });
+  }
+
+  private setupScrollReveal() {
     setTimeout(() => {
-      this.el.nativeElement.querySelectorAll('.reveal').forEach((el: Element) => {
-        observer.observe(el);
+      this.el.nativeElement.querySelectorAll('.reveal:not(.revealed)').forEach((el: Element) => {
+        this.homeObserver.observe(el);
       });
     }, 100);
   }
