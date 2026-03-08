@@ -10,6 +10,63 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
+// POST /api/orders - Create new order (bypasses RLS via service key)
+router.post('/', async (req, res) => {
+  try {
+    const { items, ...orderData } = req.body;
+
+    if (!orderData.customer_name || !orderData.customer_email || !orderData.total) {
+      return res.status(400).json({ error: 'Missing required order fields' });
+    }
+
+    // Insert order
+    const { data: order, error: orderError } = await supabase
+      .from('orders')
+      .insert(orderData)
+      .select()
+      .single();
+
+    if (orderError) throw orderError;
+
+    // Insert order items if provided
+    if (items && items.length > 0) {
+      const orderItems = items.map(item => ({ ...item, order_id: order.id }));
+      const { error: itemsError } = await supabase
+        .from('order_items')
+        .insert(orderItems);
+      if (itemsError) throw itemsError;
+    }
+
+    res.status(201).json(order);
+  } catch (error) {
+    console.error('Create order error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// PATCH /api/orders/:id/payment - Update payment status
+router.patch('/:id/payment', async (req, res) => {
+  try {
+    const { paymentIntentId, status } = req.body;
+
+    const { data, error } = await supabase
+      .from('orders')
+      .update({
+        stripe_payment_intent_id: paymentIntentId,
+        stripe_payment_status: status,
+        status: status === 'succeeded' ? 'confirmed' : 'pending'
+      })
+      .eq('id', req.params.id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // GET /api/orders - Get all orders (admin)
 router.get('/', async (req, res) => {
   try {

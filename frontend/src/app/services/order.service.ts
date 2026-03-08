@@ -1,67 +1,44 @@
 import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { SupabaseService } from './supabase.service';
 import { Order, OrderItem } from '../models/interfaces';
+import { environment } from '../../environments/environment';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
   private supabase = inject(SupabaseService);
+  private http = inject(HttpClient);
 
-  // Create order
+  // Create order via backend API (bypasses RLS using service key)
   async createOrder(order: Omit<Order, 'id' | 'order_number'>): Promise<Order> {
-    const { items, ...orderData } = order;
-
-    // Insert order
-    const { data: orderResult, error: orderError } = await this.supabase.client
-      .from('orders')
-      .insert(orderData)
-      .select()
-      .single();
-
-    if (orderError) throw orderError;
-
-    // Insert order items
-    const orderItems = items.map(item => ({
-      ...item,
-      order_id: orderResult.id
-    }));
-
-    const { error: itemsError } = await this.supabase.client
-      .from('order_items')
-      .insert(orderItems);
-
-    if (itemsError) throw itemsError;
-
-    return orderResult as Order;
+    const result = await firstValueFrom(
+      this.http.post<Order>(`${environment.apiUrl}/orders`, order)
+    );
+    return result;
   }
 
-  // Update order payment status
+  // Update order payment status via backend API
   async updatePaymentStatus(
     orderId: string,
     paymentIntentId: string,
     status: string
   ): Promise<void> {
-    const { error } = await this.supabase.client
-      .from('orders')
-      .update({
-        stripe_payment_intent_id: paymentIntentId,
-        stripe_payment_status: status,
-        status: status === 'succeeded' ? 'confirmed' : 'pending'
+    await firstValueFrom(
+      this.http.patch(`${environment.apiUrl}/orders/${orderId}/payment`, {
+        paymentIntentId,
+        status
       })
-      .eq('id', orderId);
-
-    if (error) throw error;
+    );
   }
 
-  // Get order by ID
+  // Get order by ID (read-only, using anon key is fine)
   async getOrder(orderId: string): Promise<Order | null> {
     const { data, error } = await this.supabase.client
       .from('orders')
-      .select(`
-        *,
-        order_items(*)
-      `)
+      .select(`*, order_items(*)`)
       .eq('id', orderId)
       .single();
 
@@ -73,10 +50,7 @@ export class OrderService {
   async getAllOrders(limit = 50): Promise<Order[]> {
     const { data, error } = await this.supabase.client
       .from('orders')
-      .select(`
-        *,
-        order_items(*)
-      `)
+      .select(`*, order_items(*)`)
       .order('created_at', { ascending: false })
       .limit(limit);
 
