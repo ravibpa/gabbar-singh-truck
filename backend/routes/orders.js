@@ -4,11 +4,88 @@
 const express = require('express');
 const router = express.Router();
 const { createClient } = require('@supabase/supabase-js');
+const nodemailer = require('nodemailer');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY
 );
+
+// Email transporter (only if SMTP is configured)
+let transporter = null;
+if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+  transporter = nodemailer.createTransporter({
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT || '587'),
+    secure: process.env.SMTP_PORT === '465',
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
+}
+
+async function sendOrderReceipt(order, items) {
+  if (!transporter) return;
+  const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER;
+  const itemsHtml = (items || []).map(item =>
+    `<tr>
+      <td style="padding:8px 12px;border-bottom:1px solid #f0e8df;">${item.name}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #f0e8df;text-align:center;">x${item.quantity}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #f0e8df;text-align:right;">$${(item.total_price || item.unit_price * item.quantity).toFixed(2)}</td>
+    </tr>`
+  ).join('');
+
+  const html = `
+    <div style="font-family:'Poppins',Arial,sans-serif;max-width:560px;margin:0 auto;background:#fff8f0;border-radius:16px;overflow:hidden;">
+      <div style="background:linear-gradient(135deg,#1A0A00,#8B1A1A);padding:32px;text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:8px;">🌶️</div>
+        <h1 style="font-family:Georgia,serif;color:#FFD700;margin:0;font-size:1.6rem;">Gabbar Singh Truck</h1>
+        <p style="color:rgba(255,248,240,0.7);margin:8px 0 0;font-size:0.9rem;">Order Confirmed!</p>
+      </div>
+      <div style="padding:28px;">
+        <p style="color:#2C1810;font-size:1rem;">Hi <strong>${order.customer_name}</strong>,</p>
+        <p style="color:#2C1810;font-size:0.9rem;">Your order <strong style="color:#FF6B1A;">${order.order_number || '#' + order.id?.substring(0,8)}</strong> has been received. 🎉</p>
+        <p style="color:#2C1810;font-size:0.9rem;">Order type: <strong>${order.order_type === 'delivery' ? '🛵 Delivery' : '🏃 Pickup'}</strong></p>
+
+        <table style="width:100%;border-collapse:collapse;margin:20px 0;background:white;border-radius:10px;overflow:hidden;">
+          <thead>
+            <tr style="background:#1A0A00;">
+              <th style="padding:10px 12px;color:#C9A227;text-align:left;font-size:0.8rem;">Item</th>
+              <th style="padding:10px 12px;color:#C9A227;text-align:center;font-size:0.8rem;">Qty</th>
+              <th style="padding:10px 12px;color:#C9A227;text-align:right;font-size:0.8rem;">Price</th>
+            </tr>
+          </thead>
+          <tbody>${itemsHtml}</tbody>
+        </table>
+
+        <div style="border-top:2px solid rgba(201,162,39,0.2);padding-top:16px;text-align:right;">
+          <p style="margin:4px 0;font-size:0.85rem;color:rgba(44,24,16,0.6);">Subtotal: $${(order.subtotal || 0).toFixed(2)}</p>
+          ${order.discount ? `<p style="margin:4px 0;font-size:0.85rem;color:#138808;">Discount: -$${order.discount.toFixed(2)}</p>` : ''}
+          <p style="margin:4px 0;font-size:0.85rem;color:rgba(44,24,16,0.6);">Tax: $${(order.tax || 0).toFixed(2)}</p>
+          ${order.delivery_fee ? `<p style="margin:4px 0;font-size:0.85rem;color:rgba(44,24,16,0.6);">Delivery: $${order.delivery_fee.toFixed(2)}</p>` : ''}
+          <p style="margin:8px 0 0;font-size:1.2rem;font-weight:700;color:#FF6B1A;">Total: $${order.total.toFixed(2)}</p>
+        </div>
+
+        <div style="margin-top:24px;padding:16px;background:rgba(201,162,39,0.08);border-radius:10px;border-left:4px solid #C9A227;">
+          <p style="margin:0;font-size:0.85rem;color:#2C1810;">🌶️ <strong>Thank you for choosing Gabbar Singh Truck!</strong></p>
+          <p style="margin:8px 0 0;font-size:0.8rem;color:rgba(44,24,16,0.6);">Questions? Call us or reply to this email.</p>
+        </div>
+      </div>
+    </div>`;
+
+  try {
+    await transporter.sendMail({
+      from: `"Gabbar Singh Truck 🌶️" <${fromEmail}>`,
+      to: order.customer_email,
+      subject: `Order Confirmed 🌶️ ${order.order_number || ''} - Gabbar Singh Truck`,
+      html,
+    });
+    console.log(`✅ Receipt sent to ${order.customer_email}`);
+  } catch (err) {
+    console.error('Failed to send receipt:', err.message);
+  }
+}
 
 // POST /api/orders - Create new order (bypasses RLS via service key)
 router.post('/', async (req, res) => {
@@ -36,6 +113,9 @@ router.post('/', async (req, res) => {
         .insert(orderItems);
       if (itemsError) throw itemsError;
     }
+
+    // Send receipt email asynchronously (don't block response)
+    sendOrderReceipt(order, items).catch(() => {});
 
     res.status(201).json(order);
   } catch (error) {

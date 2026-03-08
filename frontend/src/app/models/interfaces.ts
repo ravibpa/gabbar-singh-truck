@@ -134,6 +134,19 @@ export interface SiteSettings {
   };
 }
 
+export interface SiteOffer {
+  id?: string;
+  title: string;
+  description?: string;
+  badge_text: string;
+  discount_type: 'percentage' | 'fixed';
+  discount_value: number;
+  applies_to: 'all' | 'pickup' | 'delivery';
+  is_active: boolean;
+  sort_order?: number;
+  created_at?: string;
+}
+
 export interface CheckoutFormData {
   name: string;
   email: string;

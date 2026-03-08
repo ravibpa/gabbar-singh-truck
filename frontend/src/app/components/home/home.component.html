@@ -160,6 +160,32 @@
 </div>
 
 <!-- ============================================================
+     ACTIVE OFFERS BANNER
+     ============================================================ -->
+@if (activeOffers().length > 0) {
+  <div class="offers-banner">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+      <div class="offers-scroll">
+        @for (offer of activeOffers(); track offer.id) {
+          <div class="offer-card">
+            <span class="offer-badge">{{ offer.badge_text }}</span>
+            <div class="offer-text">
+              <strong>{{ offer.title }}</strong>
+              @if (offer.description) {
+                <span>{{ offer.description }}</span>
+              }
+            </div>
+            @if (offer.applies_to !== 'all') {
+              <span class="offer-pill">{{ offer.applies_to }} only</span>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ============================================================
      TUPAKI CHICKEN - SIGNATURE FEATURE
      ============================================================ -->
 @if (tupakiItem) {

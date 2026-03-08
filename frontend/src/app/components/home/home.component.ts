@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { MenuService } from '../../services/menu.service';
 import { MenuItemCardComponent } from '../menu-item-card/menu-item-card.component';
 import { SupabaseService } from '../../services/supabase.service';
-import { MenuItem } from '../../models/interfaces';
+import { MenuItem, SiteOffer } from '../../models/interfaces';
 
 @Component({
   selector: 'app-home',
@@ -69,6 +69,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.cateringMessage = '';
   }
 
+  activeOffers = signal<SiteOffer[]>([]);
+
   particles = Array.from({ length: 12 }, (_, i) => ({
     id: i,
     emoji: ['🌶️', '🫛', '🧅', '🧄', '⭐', '🪷', '✨', '🍃'][i % 8],
@@ -78,6 +80,18 @@ export class HomeComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.menuService.loadCategories();
     this.menuService.loadMenuItems();
+    this.loadActiveOffers();
+  }
+
+  async loadActiveOffers() {
+    try {
+      const { data } = await this.supabase.client
+        .from('site_offers')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true });
+      this.activeOffers.set((data || []) as SiteOffer[]);
+    } catch {}
   }
 
   ngAfterViewInit() {

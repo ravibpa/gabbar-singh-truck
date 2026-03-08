@@ -1112,3 +1112,81 @@ textarea.cf-input {
 
   .mt-6 { margin-top: 24px; }
 }
+
+// ============================================================
+// OFFERS BANNER
+// ============================================================
+.offers-banner {
+  background: linear-gradient(135deg, #1A0A00, #3D1A00);
+  border-bottom: 2px solid rgba(201, 162, 39, 0.3);
+}
+
+.offers-scroll {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+.offer-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(201, 162, 39, 0.25);
+  border-radius: 40px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.2s;
+
+  &:hover { background: rgba(255, 255, 255, 0.1); }
+}
+
+.offer-badge {
+  display: inline-flex;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #FF6B1A, #FFD700);
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
+}
+
+.offer-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+
+  strong {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: rgba(255, 248, 240, 0.95);
+  }
+
+  span {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.72rem;
+    color: rgba(255, 248, 240, 0.55);
+  }
+}
+
+.offer-pill {
+  display: inline-flex;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(201, 162, 39, 0.2);
+  border: 1px solid rgba(201, 162, 39, 0.3);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #C9A227;
+  text-transform: capitalize;
+}
+

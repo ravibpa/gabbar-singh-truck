@@ -25,6 +25,12 @@
           <span class="nav-badge urgent">{{ pendingOrders }}</span>
         }
       </button>
+      <button class="nav-item" [class.active]="activeTab() === 'offers'" (click)="setTab('offers')">
+        <span>🎁</span> Offers
+        @if (offers().length > 0) {
+          <span class="nav-badge">{{ offers().length }}</span>
+        }
+      </button>
       <button class="nav-item" [class.active]="activeTab() === 'settings'" (click)="setTab('settings')">
         <span>⚙️</span> Settings
       </button>
@@ -46,6 +52,7 @@
           @case ('dashboard') { Dashboard }
           @case ('menu') { Menu Management }
           @case ('orders') { Orders }
+          @case ('offers') { Offers & Promotions }
           @case ('settings') { Settings }
         }
       </h1>
@@ -251,22 +258,160 @@
       </div>
     }
 
+    <!-- ===== OFFERS ===== -->
+    @if (activeTab() === 'offers') {
+      <div class="offers-management">
+        <div class="section-toolbar">
+          <button (click)="openAddOffer()" class="btn-primary">+ New Offer</button>
+        </div>
+
+        <div class="section-card">
+          <div class="section-card-header">
+            <h2>Active Offers & Promotions</h2>
+            <button (click)="loadOffers()" class="refresh-btn">🔄 Refresh</button>
+          </div>
+
+          @if (offers().length === 0) {
+            <div class="empty-message">
+              No offers yet. Create your first offer to show promotions on the site!
+            </div>
+          } @else {
+            <div class="offers-list">
+              @for (offer of offers(); track offer.id) {
+                <div class="offer-row" [class.inactive]="!offer.is_active">
+                  <div class="offer-badge-preview" [class.offer-active]="offer.is_active">
+                    {{ offer.badge_text }}
+                  </div>
+                  <div class="offer-info">
+                    <strong class="offer-title">{{ offer.title }}</strong>
+                    @if (offer.description) {
+                      <p class="offer-desc">{{ offer.description }}</p>
+                    }
+                    <div class="offer-meta-tags">
+                      <span class="offer-tag">{{ getOfferDiscountLabel(offer) }}</span>
+                      <span class="offer-tag">{{ offer.applies_to === 'all' ? 'All orders' : offer.applies_to + ' only' }}</span>
+                    </div>
+                  </div>
+                  <div class="offer-actions-col">
+                    <button
+                      class="availability-toggle"
+                      [class.available]="offer.is_active"
+                      [class.unavailable-btn]="!offer.is_active"
+                      (click)="toggleOffer(offer)"
+                    >
+                      {{ offer.is_active ? '✅ Active' : '❌ Inactive' }}
+                    </button>
+                    <div class="action-btns mt-2">
+                      <button (click)="openEditOffer(offer)" class="edit-btn">✏️ Edit</button>
+                      <button (click)="deleteOffer(offer)" class="delete-btn">🗑️</button>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="section-card mt-4">
+          <div class="section-card-header">
+            <h2>📌 How Offers Work</h2>
+          </div>
+          <div class="offer-instructions">
+            <p>• <strong>Active offers</strong> appear as a scrolling banner on your home page and menu page.</p>
+            <p>• Set a <strong>badge text</strong> like "30% OFF" or "HAPPY HOURS" — this is shown prominently.</p>
+            <p>• The <strong>discount value</strong> is informational (for display). To actually apply discounts at checkout, use <strong>Promo Codes</strong> in your Supabase <code>promo_codes</code> table.</p>
+            <p>• Toggle offers <strong>active/inactive</strong> instantly — no redeployment needed.</p>
+          </div>
+        </div>
+      </div>
+    }
+
     <!-- ===== SETTINGS ===== -->
     @if (activeTab() === 'settings') {
       <div class="settings-content">
-        <div class="section-card">
-          <h2>Site Settings</h2>
-          <p class="text-sm text-gray-500 mt-2">
-            Manage your site settings directly in Supabase via the site_settings table.
-            You can update business hours, hero content, and delivery settings from there.
-          </p>
 
-          <div class="settings-links mt-6">
+        <!-- Stripe Settings -->
+        <div class="section-card mb-4">
+          <div class="section-card-header">
+            <h2>💳 Stripe Configuration</h2>
+            <span class="stripe-mode-badge" [class.live-mode]="stripeMode === 'live'" [class.test-mode]="stripeMode === 'test'">
+              {{ stripeMode === 'live' ? '🟢 LIVE MODE' : '🧪 TEST MODE' }}
+            </span>
+          </div>
+          <div class="settings-info-grid">
+            <div class="info-item">
+              <label class="info-label">Publishable Key</label>
+              <code class="info-value">{{ stripeKey }}</code>
+            </div>
+            <div class="info-item">
+              <label class="info-label">Secret Key</label>
+              <code class="info-value">Stored in backend .env</code>
+            </div>
+          </div>
+          <div class="settings-note mt-3">
+            <span>⚠️</span>
+            <p>To switch between test/live mode or update Stripe keys, edit <code>STRIPE_SECRET_KEY</code> and <code>STRIPE_PUBLISHABLE_KEY</code> in your backend <code>.env</code> file, then redeploy. <a href="https://dashboard.stripe.com/apikeys" target="_blank">Get your keys →</a></p>
+          </div>
+        </div>
+
+        <!-- Logo Settings -->
+        <div class="section-card mb-4">
+          <div class="section-card-header">
+            <h2>🖼️ Site Logo</h2>
+          </div>
+          <p class="settings-desc">Set a custom logo image URL. Leave blank to use the default 🌶️ emoji.</p>
+          <div class="logo-setting-row mt-3">
+            @if (logoUrl()) {
+              <img [src]="logoUrl()" alt="Current logo" class="logo-preview" />
+            } @else {
+              <div class="logo-placeholder">🌶️</div>
+            }
+            <div class="logo-input-group">
+              <input
+                type="url"
+                class="form-input"
+                placeholder="https://your-site.com/logo.png"
+                [value]="logoUrl()"
+                (input)="logoUrl.set($any($event.target).value)"
+              />
+              <button class="btn-primary" (click)="saveLogo()" [disabled]="logoSaving()">
+                {{ logoSaving() ? 'Saving...' : 'Save Logo' }}
+              </button>
+            </div>
+          </div>
+          <div class="settings-note mt-2">
+            <span>💡</span>
+            <p>Use a PNG or SVG with transparent background, ideally 200×60px. You can host images on <a href="https://imgur.com" target="_blank">Imgur</a> or any CDN.</p>
+          </div>
+        </div>
+
+        <!-- Database Links -->
+        <div class="section-card">
+          <div class="section-card-header">
+            <h2>🗄️ Database & Infrastructure</h2>
+          </div>
+          <div class="settings-links">
             <a href="https://app.supabase.com" target="_blank" class="settings-link-card">
               <span>🗄️</span>
               <div>
                 <strong>Supabase Dashboard</strong>
-                <p>Manage database tables & settings</p>
+                <p>Manage tables, RLS policies, storage</p>
+              </div>
+              <span>→</span>
+            </a>
+            <a href="https://dashboard.stripe.com" target="_blank" class="settings-link-card">
+              <span>💳</span>
+              <div>
+                <strong>Stripe Dashboard</strong>
+                <p>View payments, refunds, API keys</p>
+              </div>
+              <span>→</span>
+            </a>
+            <a href="https://app.netlify.com" target="_blank" class="settings-link-card">
+              <span>🚀</span>
+              <div>
+                <strong>Netlify Dashboard</strong>
+                <p>Manage deployments & environment variables</p>
               </div>
               <span>→</span>
             </a>
@@ -277,6 +422,86 @@
 
   </main>
 </div>
+
+<!-- ===== OFFER MODAL ===== -->
+@if (showOfferModal()) {
+  <div class="modal-overlay" (click)="closeOfferModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ editingOffer() ? 'Edit Offer' : 'New Offer' }}</h2>
+        <button (click)="closeOfferModal()" class="modal-close">✕</button>
+      </div>
+
+      <form [formGroup]="offerForm" (ngSubmit)="saveOffer()" class="modal-form">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label class="form-label">Offer Title *</label>
+              <input type="text" formControlName="title" class="form-input" placeholder="e.g. Happy Hours Special" />
+            </div>
+
+            <div class="form-group full-width">
+              <label class="form-label">Description</label>
+              <textarea formControlName="description" class="form-input" rows="2"
+                        placeholder="e.g. 30% off all biryanis every weekday 2-5 PM"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Badge Text * <span class="hint">(shown on site)</span></label>
+              <input type="text" formControlName="badge_text" class="form-input" placeholder="e.g. 30% OFF" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Applies To</label>
+              <select formControlName="applies_to" class="form-input">
+                <option value="all">All Orders</option>
+                <option value="pickup">Pickup Only</option>
+                <option value="delivery">Delivery Only</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Discount Type</label>
+              <select formControlName="discount_type" class="form-input">
+                <option value="percentage">Percentage (%)</option>
+                <option value="fixed">Fixed Amount ($)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Discount Value</label>
+              <input type="number" formControlName="discount_value" class="form-input"
+                     min="0" step="1" placeholder="e.g. 30" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Sort Order</label>
+              <input type="number" formControlName="sort_order" class="form-input" min="0" />
+            </div>
+
+            <div class="form-group" style="display:flex;align-items:center;padding-top:20px;">
+              <label class="checkbox-item">
+                <input type="checkbox" formControlName="is_active" />
+                <span>✅ Active (show on site)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        @if (error()) {
+          <div class="alert-error" style="margin: 0 24px;">⚠️ {{ error() }}</div>
+        }
+
+        <div class="modal-footer">
+          <button type="button" (click)="closeOfferModal()" class="btn-cancel">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="offerSaving()">
+            @if (offerSaving()) { Saving... } @else { {{ editingOffer() ? 'Update Offer' : 'Create Offer' }} }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
 
 <!-- ===== ITEM MODAL ===== -->
 @if (showItemModal()) {

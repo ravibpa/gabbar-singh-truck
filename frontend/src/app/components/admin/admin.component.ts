@@ -6,9 +6,10 @@ import { AuthService } from '../../services/auth.service';
 import { MenuService } from '../../services/menu.service';
 import { OrderService } from '../../services/order.service';
 import { SupabaseService } from '../../services/supabase.service';
-import { MenuItem, MenuCategory, Order } from '../../models/interfaces';
+import { MenuItem, MenuCategory, Order, SiteOffer } from '../../models/interfaces';
+import { environment } from '../../../environments/environment';
 
-type AdminTab = 'dashboard' | 'menu' | 'orders' | 'settings';
+type AdminTab = 'dashboard' | 'menu' | 'orders' | 'offers' | 'settings';
 
 @Component({
   selector: 'app-admin',
@@ -39,6 +40,21 @@ export class AdminComponent implements OnInit {
   todayRevenue = signal(0);
   totalItems = signal(0);
 
+  // Offers
+  offers = signal<SiteOffer[]>([]);
+  editingOffer = signal<SiteOffer | null>(null);
+  showOfferModal = signal(false);
+  offerSaving = signal(false);
+
+  // Settings
+  settingsSaving = signal(false);
+  stripeMode = environment.stripePublishableKey?.startsWith('pk_live') ? 'live' : 'test';
+  stripeKey = environment.stripePublishableKey
+    ? environment.stripePublishableKey.substring(0, 10) + '...' + environment.stripePublishableKey.slice(-4)
+    : 'Not configured';
+  logoUrl = signal('');
+  logoSaving = signal(false);
+
   itemForm: FormGroup = this.fb.group({
     name: ['', [Validators.required]],
     description: [''],
@@ -53,6 +69,17 @@ export class AdminComponent implements OnInit {
     sort_order: [0],
   });
 
+  offerForm: FormGroup = this.fb.group({
+    title: ['', Validators.required],
+    description: [''],
+    badge_text: ['', Validators.required],
+    discount_type: ['percentage', Validators.required],
+    discount_value: [0, [Validators.required, Validators.min(0)]],
+    applies_to: ['all', Validators.required],
+    is_active: [true],
+    sort_order: [0],
+  });
+
   ngOnInit() {
     this.loadData();
   }
@@ -63,6 +90,8 @@ export class AdminComponent implements OnInit {
       this.menuService.loadCategories(),
       this.loadAllMenuItems(),
       this.loadOrders(),
+      this.loadOffers(),
+      this.loadLogoUrl(),
     ]);
     this.calculateStats();
     this.loading.set(false);
@@ -83,6 +112,29 @@ export class AdminComponent implements OnInit {
     } catch {}
   }
 
+  async loadOffers() {
+    try {
+      const { data } = await this.supabase.client
+        .from('site_offers')
+        .select('*')
+        .order('sort_order', { ascending: true });
+      this.offers.set((data || []) as SiteOffer[]);
+    } catch {}
+  }
+
+  async loadLogoUrl() {
+    try {
+      const { data } = await this.supabase.client
+        .from('site_settings')
+        .select('settings')
+        .eq('id', 'main')
+        .single();
+      if (data?.settings?.logo_url) {
+        this.logoUrl.set(data.settings.logo_url);
+      }
+    } catch {}
+  }
+
   calculateStats() {
     const today = new Date().toDateString();
     const todayOrders = this.orders().filter(o =>
@@ -99,6 +151,7 @@ export class AdminComponent implements OnInit {
   setTab(tab: AdminTab) {
     this.activeTab.set(tab);
     this.showItemModal.set(false);
+    this.showOfferModal.set(false);
   }
 
   openAddItem() {
@@ -203,6 +256,119 @@ export class AdminComponent implements OnInit {
       cancelled: 'status-cancelled',
     };
     return map[status] || '';
+  }
+
+  // ===== OFFERS =====
+  openAddOffer() {
+    this.editingOffer.set(null);
+    this.offerForm.reset({
+      title: '', description: '', badge_text: '',
+      discount_type: 'percentage', discount_value: 0,
+      applies_to: 'all', is_active: true, sort_order: 0
+    });
+    this.showOfferModal.set(true);
+  }
+
+  openEditOffer(offer: SiteOffer) {
+    this.editingOffer.set(offer);
+    this.offerForm.patchValue(offer);
+    this.showOfferModal.set(true);
+  }
+
+  closeOfferModal() {
+    this.showOfferModal.set(false);
+    this.editingOffer.set(null);
+    this.error.set('');
+  }
+
+  async saveOffer() {
+    if (this.offerForm.invalid) {
+      this.offerForm.markAllAsTouched();
+      return;
+    }
+
+    this.offerSaving.set(true);
+    this.error.set('');
+
+    try {
+      const data = this.offerForm.value;
+      if (this.editingOffer()?.id) {
+        const { error } = await this.supabase.client
+          .from('site_offers')
+          .update(data)
+          .eq('id', this.editingOffer()!.id);
+        if (error) throw error;
+        this.successMsg.set('Offer updated!');
+      } else {
+        const { error } = await this.supabase.client
+          .from('site_offers')
+          .insert(data);
+        if (error) throw error;
+        this.successMsg.set('Offer created!');
+      }
+      await this.loadOffers();
+      this.closeOfferModal();
+      setTimeout(() => this.successMsg.set(''), 3000);
+    } catch (e: any) {
+      this.error.set(e.message || 'Failed to save offer');
+    } finally {
+      this.offerSaving.set(false);
+    }
+  }
+
+  async toggleOffer(offer: SiteOffer) {
+    try {
+      const { error } = await this.supabase.client
+        .from('site_offers')
+        .update({ is_active: !offer.is_active })
+        .eq('id', offer.id);
+      if (error) throw error;
+      await this.loadOffers();
+    } catch (e: any) {
+      this.error.set(e.message);
+    }
+  }
+
+  async deleteOffer(offer: SiteOffer) {
+    if (!confirm(`Delete offer "${offer.title}"?`)) return;
+    try {
+      const { error } = await this.supabase.client
+        .from('site_offers')
+        .delete()
+        .eq('id', offer.id);
+      if (error) throw error;
+      await this.loadOffers();
+      this.successMsg.set('Offer deleted.');
+      setTimeout(() => this.successMsg.set(''), 3000);
+    } catch (e: any) {
+      this.error.set(e.message);
+    }
+  }
+
+  getOfferDiscountLabel(offer: SiteOffer): string {
+    if (offer.discount_value === 0) return offer.badge_text;
+    return offer.discount_type === 'percentage'
+      ? `${offer.discount_value}% OFF`
+      : `$${offer.discount_value} OFF`;
+  }
+
+  // ===== SETTINGS =====
+  async saveLogo() {
+    if (!this.logoUrl()) return;
+    this.logoSaving.set(true);
+    try {
+      // Upsert into site_settings
+      const { error } = await this.supabase.client
+        .from('site_settings')
+        .upsert({ id: 'main', settings: { logo_url: this.logoUrl() } }, { onConflict: 'id' });
+      if (error) throw error;
+      this.successMsg.set('Logo URL saved! Refresh the site to see changes.');
+      setTimeout(() => this.successMsg.set(''), 4000);
+    } catch (e: any) {
+      this.error.set('Failed to save logo: ' + e.message);
+    } finally {
+      this.logoSaving.set(false);
+    }
   }
 
   get spiceLevels() { return [1, 2, 3, 4, 5]; }
