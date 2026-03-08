@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SupabaseService } from './supabase.service';
-import { Order, OrderItem } from '../models/interfaces';
+import { Order } from '../models/interfaces';
 import { environment } from '../../environments/environment';
 import { firstValueFrom } from 'rxjs';
 
@@ -34,16 +34,15 @@ export class OrderService {
     );
   }
 
-  // Get order by ID (read-only, using anon key is fine)
+  // Get order by ID via backend API (uses service key, bypasses RLS)
   async getOrder(orderId: string): Promise<Order | null> {
-    const { data, error } = await this.supabase.client
-      .from('orders')
-      .select(`*, order_items(*)`)
-      .eq('id', orderId)
-      .single();
-
-    if (error) return null;
-    return data as Order;
+    try {
+      return await firstValueFrom(
+        this.http.get<Order>(`${environment.apiUrl}/orders/${orderId}`)
+      );
+    } catch {
+      return null;
+    }
   }
 
   // Get all orders (admin)
